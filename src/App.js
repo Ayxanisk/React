@@ -1,18 +1,13 @@
 import './App.css';
-import {useState} from "react";
-import DisplayCountClick from "./components/DisplayCountClick/DisplayCountClick";
-import UpdateCountClick from "./components/UpdateCountClick/UpdateCountClick";
+import Characters from "./components/Characters/Characters";
 
 const App = () => {
-    const [countClick, setCountClick] = useState(0);
-
     return (
         <div>
-            <DisplayCountClick countClick={countClick} />
-            <br/>
-            <UpdateCountClick countClick={countClick} setCountClick={setCountClick} />
+            <h1 style={{ textAlign: "center" }}>Rick and Morty Characters</h1>
+            <Characters />
         </div>
-    )
+    );
 }
 
 export default App;
