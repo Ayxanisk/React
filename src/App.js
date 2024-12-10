@@ -1,16 +1,18 @@
-import { useState } from 'react';
 import './App.css';
-import List from "./components/List";
-
-let render = 0;
+import {useState} from "react";
+import DisplayCountClick from "./components/DisplayCountClick/DisplayCountClick";
+import UpdateCountClick from "./components/UpdateCountClick/UpdateCountClick";
 
 const App = () => {
-  let test = 0;
-  console.log('render', ++render);
+    const [countClick, setCountClick] = useState(0);
 
-  <List></List>
-  <List></List>
-  <List></List>
+    return (
+        <div>
+            <DisplayCountClick countClick={countClick} />
+            <br/>
+            <UpdateCountClick countClick={countClick} setCountClick={setCountClick} />
+        </div>
+    )
 }
 
 export default App;
