@@ -1,0 +1,56 @@
+
+.form {
+
+}
+
+.form fieldset {
+    position: relative;
+    padding: 16px;
+}
+
+.form fieldset legend {
+    position: absolute;
+    top: 0;
+    left: 20px;
+    background-color: white;
+    transform: translateY(-50%);
+}
+
+.form fieldset :is([type='text'], [type='password']) {
+    border: none;
+    width: 100%;
+}
+
+
+.form fieldset input:is([type='text'], [type='password']):focus,
+.form fieldset input:is([type='text'], [type='password']):focus-within {
+    outline: none;
+}
+
+.form fieldset {
+    border-style: solid;
+}
+
+.form fieldset:has(input[type='text'][data-is-valid="false"]) {
+    border-color: red;
+}
+
+.form fieldset:has(input[type='text'][data-is-valid="true"]) {
+    border-color: green;
+}
+
+.form fieldset:has(input[type='text'][data-is-valid="null"]) {
+    border-color: darkgray;
+}
+
+input[type='text']:valid {
+    background-color: green;
+}
+
+input[type='text']:invalid {
+    background-color: red;
+}
+
+input[type='text']:placeholder-shown {
+    background-color: white;
+}

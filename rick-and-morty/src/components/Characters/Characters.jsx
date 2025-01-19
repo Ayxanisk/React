@@ -10,7 +10,7 @@ const Characters = () => {
     useEffect(() => {
         setLoading(true);
         fetch("https://rickandmortyapi.com/api/character")
-            .then((response) => {
+            .then((response) => {   
                 return response.json();
             })
             .then((data) => {
