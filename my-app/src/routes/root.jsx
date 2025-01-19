@@ -10,12 +10,22 @@ export async function action() {
 export async function loader({ request }) {
     const url = new URL(request.url);
     const q = url.searchParams.get("q");
-    const tasks = await getTasks(q);
-    return { tasks, q };
+    const filter = url.searchParams.get("filter"); // Новый параметр
+    const allTasks = await getTasks(q);
+
+    let tasks = allTasks;
+    if (filter === "completed") {
+        tasks = allTasks.filter(task => task.completed);
+    } else if (filter === "incomplete") {
+        tasks = allTasks.filter(task => !task.completed);
+    }
+
+    return { tasks, q, filter };
 }
 
+
 export default function Root() {
-    const { tasks, q } = useLoaderData();
+    const { tasks, q, filter } = useLoaderData();
     const navigation = useNavigation();
     const submit = useSubmit();
 
@@ -51,7 +61,39 @@ export default function Root() {
                         ></div>
                     </Form>
                     <Form method="post">
-                        <button type="submit">New Task</button>
+                        <button type="submit">New</button>
+                    </Form>
+                    <Form>
+                        <button
+                            type="submit"
+                            name="filter"
+                            value="all"
+                            className={filter === "all" ? "active" : ""}
+                        >
+                            Show All
+                        </button>
+                    </Form>
+                    <Form>
+
+                        <button
+                            type="submit"
+                            name="filter"
+                            value="completed"
+                            className={filter === "completed" ? "active" : ""}
+                        >
+                            Show Completed
+                        </button>
+                    </Form>
+                    <Form>
+
+                        <button
+                            type="submit"
+                            name="filter"
+                            value="incomplete"
+                            className={filter === "incomplete" ? "active" : ""}
+                        >
+                            Show Incomplete
+                        </button>
                     </Form>
                 </div>
                 <nav>
@@ -63,13 +105,13 @@ export default function Root() {
                                         to={`tasks/${task.id}`}
                                         className={({ isActive, isPending }) =>
                                             isActive
-                                                ? 'active'
+                                                ? "active"
                                                 : isPending
-                                                    ? 'pending'
-                                                    : ''
+                                                    ? "pending"
+                                                    : ""
                                         }
                                     >
-                                        {task.title || <i>No Title</i>}{' '}
+                                        {task.title || <i>No Title</i>}{" "}
                                         {task.completed && <span>✔</span>}
                                     </NavLink>
                                 </li>
@@ -85,7 +127,7 @@ export default function Root() {
             <div
                 id="detail"
                 className={
-                    navigation.state === 'loading' ? 'loading' : ''
+                    navigation.state === "loading" ? "loading" : ""
                 }
             >
                 <Outlet />
