@@ -10,7 +10,7 @@ export async function action() {
 export async function loader({ request }) {
     const url = new URL(request.url);
     const q = url.searchParams.get("q");
-    const filter = url.searchParams.get("filter"); // Новый параметр
+    const filter = url.searchParams.get("filter");
     const allTasks = await getTasks(q);
 
     let tasks = allTasks;
