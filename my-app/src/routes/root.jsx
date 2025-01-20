@@ -1,16 +1,11 @@
 import { Form, NavLink, Outlet, redirect, useLoaderData, useNavigation, useSubmit } from 'react-router-dom';
 import { createTask, getTasks } from '../tasks';
 import { useEffect } from 'react';
-import { store } from '../redux/store';
-import { addTask } from '../redux/slices/tasksSlice';
+
 export async function action() {
-    const newTask = createTask();
-
-    store.dispatch(addTask(newTask));
-
+    const newTask = await createTask();
     return redirect(`/tasks/${newTask.id}/edit`);
 }
-
 export async function loader({ request }) {
     const url = new URL(request.url);
     const q = url.searchParams.get("q");
@@ -26,6 +21,7 @@ export async function loader({ request }) {
 
     return { tasks, q, filter };
 }
+
 
 
 export default function Root() {
@@ -65,7 +61,7 @@ export default function Root() {
                         ></div>
                     </Form>
                     <Form method="post">
-                        <button type="submit">New</button>
+                        <button type="submit">New Task</button>
                     </Form>
                     <Form>
                         <button
@@ -77,7 +73,7 @@ export default function Root() {
                             Show All
                         </button>
                     </Form>
-                    <Form>
+                <Form>
 
                         <button
                             type="submit"
@@ -87,7 +83,8 @@ export default function Root() {
                         >
                             Show Completed
                         </button>
-                    </Form>
+                </Form>
+
                     <Form>
 
                         <button

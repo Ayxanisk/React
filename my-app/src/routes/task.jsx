@@ -1,17 +1,18 @@
 import { Form, useLoaderData } from 'react-router-dom';
 import { getTask,updateTask } from '../tasks';
-
 export async function loader({ params }) {
     const task = await getTask(params.taskId);
 
     return { task };
 }
+
 export async function action({ request, params }) {
     const formData = await request.formData();
     const favorite = formData.get('favorite') === 'true';
     const completed = formData.get('completed') === 'true';
 
     await updateTask(params.taskId, { favorite, completed  });
+
     return null;
 }
 
