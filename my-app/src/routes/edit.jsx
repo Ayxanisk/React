@@ -1,15 +1,13 @@
 import { Form, redirect, useLoaderData, useNavigate } from 'react-router-dom';
-import { updateTask } from '../tasks';
-
-export async function action({ request, params }) {
-    const formData = await request.formData();
-    const updates = Object.fromEntries(formData);
-
-    await updateTask(params.taskId, updates);
-
-    return redirect(`/tasks/${params.taskId}`);
+import { store } from '../redux/store';
+import { updateTask } from '../redux/slices/tasksSlice';
+export function action({ request, params }) {
+    return request.formData().then((formData) => {
+        const updates = Object.fromEntries(formData);
+        store.dispatch(updateTask({ id: params.taskId, updates }));
+        return redirect(`/tasks/${params.taskId}`);
+    });
 }
-
 export default function EditTask() {
     const { task } = useLoaderData();
     const navigate = useNavigate();

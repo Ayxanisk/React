@@ -12,7 +12,6 @@ export async function action({ request, params }) {
     const completed = formData.get('completed') === 'true';
 
     await updateTask(params.taskId, { favorite, completed  });
-
     return null;
 }
 

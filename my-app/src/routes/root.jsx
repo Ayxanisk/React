@@ -1,10 +1,14 @@
 import { Form, NavLink, Outlet, redirect, useLoaderData, useNavigation, useSubmit } from 'react-router-dom';
 import { createTask, getTasks } from '../tasks';
 import { useEffect } from 'react';
-
+import { store } from '../redux/store';
+import { addTask } from '../redux/slices/tasksSlice';
 export async function action() {
-    const task = await createTask();
-    return redirect(`/tasks/${task.id}/edit`);
+    const newTask = createTask();
+
+    store.dispatch(addTask(newTask));
+
+    return redirect(`/tasks/${newTask.id}/edit`);
 }
 
 export async function loader({ request }) {

@@ -5,7 +5,8 @@ export default function Index() {
             <p>
                 Organize and track your tasks with ease.
                 <br />
-                Use the navigation panel to add, search, and manage tasks.
+                Use the navi
+                gation panel to add, search, and manage tasks.
             </p>
             <p>
                 Need help? Check out{" "}

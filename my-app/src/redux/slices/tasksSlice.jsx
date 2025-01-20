@@ -36,8 +36,24 @@ const tasksSlice = createSlice({
         setFilter: (state, action) => {
             state.filter = action.payload;
         },
+        updateTask: (state, action) => {
+            const { id, updates } = action.payload;
+            const task = state.tasks.find(task => task.id === id);
+            if (task) {
+                Object.assign(task, updates);
+                localStorage.setItem('tasks', JSON.stringify(state.tasks));
+            }
+        },
     },
 });
 
-export const {addTask, toggleTaskStatus,deleteTask,editTask,    setFilter} = tasksSlice.actions;
+export const {
+    addTask,
+    toggleTaskStatus,
+    deleteTask,
+    editTask,
+    setFilter,
+    updateTask,
+} = tasksSlice.actions;
+
 export default tasksSlice.reducer;

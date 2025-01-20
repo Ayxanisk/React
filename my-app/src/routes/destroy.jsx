@@ -1,5 +1,7 @@
-import { redirect } from "react-router-dom";
-import { deleteTask, getTask } from '../tasks';
+import { store } from "../redux/store";
+import { deleteTask } from "../redux/slices/tasksSlice";
+import { redirect } from 'react-router-dom';
+import { getTask } from '../tasks';
 
 export async function action({ params }) {
     const task = await getTask(params.taskId);
@@ -9,7 +11,8 @@ export async function action({ params }) {
         throw new Error(`Could not find task with ID: ${params.taskId}`);
     }
 
-    await deleteTask(params.taskId);
+    store.dispatch(deleteTask(params.taskId));
 
     return redirect("/");
 }
+
