@@ -1,0 +1,224 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background-color: #FEF8F2;
+  color: #000;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FEF8F2;
+  margin-left: 20px;
+  margin-right: 20px;
+  height: 90px;
+}
+
+nav a {
+  margin: 0 10px;
+  color: #5A5A5A;
+  text-decoration: none;
+}
+
+.signup {
+  padding: 10px 20px;
+  background-color: #000;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 50px;
+  background-color: #FFF6EB;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  color: #000;
+}
+
+.hero-content p {
+  margin: 20px 0;
+  color: #5A5A5A;
+}
+
+.hero-content form {
+  display: flex;
+  margin-top: 20px;
+}
+
+.hero-content input {
+  padding: 10px;
+  border: 1px solid #CCC;
+  border-radius: 5px 0 0 5px;
+  width: 250px;
+}
+
+.hero-content button {
+  padding: 10px;
+  background-color: #000;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  color: #fff;
+  cursor: pointer;
+}
+
+.hero-stats {
+  margin-top: 30px;
+  display: flex;
+  gap: 20px;
+  font-weight: bold;
+  color: #000;
+}
+
+.hero-image img {
+  margin-right: 150px;
+  border-radius: 50% 50% 0 0;
+  background-color: #ffd770;
+  padding: 30px;
+}
+
+.brand-logos {
+  display: flex;
+  justify-content: space-around;
+  padding: 40px;
+  background-color: #F5F2F0;
+  color: #888;
+  font-weight: bold;
+}
+
+.education-section {
+  padding: 60px 40px;
+  background-color: #FEF8F2;
+  color: #000;
+  text-align: center;
+}
+
+.education-section h2 {
+  color: #000;
+  margin-bottom: 40px;
+  font-size: 2rem;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.card {
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.card:nth-child(1) {
+  background-color: #ECEBFF;
+  color: #333;
+}
+
+.card:nth-child(2) {
+  background-color: #FFF5CF;
+  color: #333;
+}
+
+.card:nth-child(3) {
+  background-color: #FFE4E1;
+  color: #333;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #000;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #FEF8F2;
+}
+
+.login-container h2 {
+  color: #000;
+  margin-bottom: 20px;
+}
+
+.login-container input {
+  padding: 10px;
+  width: 300px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #CCC;
+}
+
+.login-container button {
+  padding: 10px 20px;
+  background-color: #000;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.signup:hover {
+  background-color: #333;
+}
+:root {
+  --bg-light: #F9F4EF;
+  --bg-dark: #1C1C1C;
+  --text-primary: #1C1C1C;
+  --text-secondary: #444;
+  --accent: #000;
+}
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .cards {
+    flex-direction: column;
+  }
+
+  .hero-image {
+    margin-top: 20px;
+  }
+}
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo{
+  display: flex;
+  margin: 0;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
