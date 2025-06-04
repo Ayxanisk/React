@@ -118,7 +118,7 @@ const App = () => {
             // Проверка допустимых доменов (опционально)
             const validDomains = [
                 'react-zeta-liard.vercel.app',
-                'react-git-main-ayxans-projects-e9372316.vercel.app'
+                'react-git-main-ayxans-projects-e9372316.vercel.app',
             ];
 
             const tokenDomain = decoded.hd || new URL(decoded.email.split('@')[1]).hostname;
