@@ -510,7 +510,7 @@ const App = () => {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+            <GoogleOAuthProvider clientId="205196465877-0neriok38upulqssmrufdpnj5cb60486.apps.googleusercontent.com">
                 <Router>
                     <Routes>
                         <Route
