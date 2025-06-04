@@ -41,6 +41,7 @@ import { getAvatar } from './components/indexedDBUtils';
 import theme from './theme';
 import './components/style/App.css';
 import LoginPage from './components/LoginPage';
+import { getUserCredentials, saveUserCredentials } from './components/indexedDBUtils';
 
 /**
  * Main App component
@@ -87,28 +88,59 @@ const App = () => {
     }, [user]);
 
     // Авторизация через email/password
-    const handleLogin = useCallback((e) => {
+    const handleLogin = useCallback(async (e) => {
         e.preventDefault();
-        if (email && password) {
-            setUser({ email });
-            setIsLoggedIn(true);
-            localStorage.setItem('email', email);
-        } else {
-            alert('Please fill in all fields');
+
+        try {
+            const storedUser = await getUserCredentials(email);
+            if (storedUser && storedUser.password === password) {
+                setUser(storedUser);
+                setIsLoggedIn(true);
+                localStorage.setItem('email', email); // сохраняем email для автологина
+            } else {
+                alert('Неверный email или пароль');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Ошибка при входе');
         }
     }, [email, password]);
 
+
     // Регистрация (аналогично логину пока без API)
-    const handleRegister = useCallback((e) => {
+    const handleRegister = useCallback(async (e) => {
         e.preventDefault();
-        if (email && password) {
-            setUser({ email });
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+        try {
+            if (!email || !password) {
+                alert('Введите email и пароль');
+                return;
+            }
+
+            if (!passwordRegex.test(password)) {
+                alert('Пароль должен содержать минимум 8 символов, включая заглавные, строчные буквы, цифры и спецсимволы');
+                return;
+            }
+
+            const existingUser = await getUserCredentials(email);
+            if (existingUser) {
+                alert('Пользователь с таким email уже зарегистрирован');
+                return;
+            }
+
+            await saveUserCredentials(email, password);
+            const userData = { email, password };
+            setUser(userData);
             setIsLoggedIn(true);
             localStorage.setItem('email', email);
-        } else {
-            alert('Please fill in all fields');
+        } catch (error) {
+            console.error('Register error:', error);
+            alert('Ошибка при регистрации');
         }
     }, [email, password]);
+
 
     // Авторизация через Google
     const handleGoogleSuccess = useCallback((credentialResponse) => {
