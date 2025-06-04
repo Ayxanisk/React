@@ -26,14 +26,7 @@ nav a {
   text-decoration: none;
 }
 
-.signup {
-  padding: 10px 20px;
-  background-color: #000;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 5px;
-}
+
 
 .hero {
   display: flex;
@@ -221,4 +214,146 @@ nav a {
 .card:hover {
   transform: translateY(-10px);
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+/* App.css */
+
+/* Базовое меню */
+nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Гамбургер и мобильное меню скрыты по умолчанию */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  border-radius: 2px;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 15px;
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  background-color: white;
+  padding: 10px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  z-index: 100;
+}
+
+/* Медиа-запрос для телефонов */
+@media (max-width: 768px) {
+  nav {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .mobile-menu.open {
+    display: flex;
+  }
+}
+
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.burger {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    flex-direction: column;
+    width: 100%;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  nav.active {
+    display: flex;
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .hero,
+  .education-section,
+  .brand-logos {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .hero-content, .hero-image {
+    width: 100%;
+  }
+
+  .cards {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .card {
+    width: 100%;
+  }
+}
+.nav-link {
+  position: relative;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: black;
+  transition: color 0.3s;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background-color: #3498db;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Подчёркивание при наведении */
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Подчёркивание и жирный текст при активной вкладке */
+.nav-link.active {
+  font-weight: bold;
+}
+
+.nav-link.active::after {
+  width: 100%;
 }

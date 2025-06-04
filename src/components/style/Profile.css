@@ -1,63 +1,179 @@
-.profile-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+.profile-container {
+    min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    z-index: 999;
+    background: #fffefc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 40px 20px;
+    box-sizing: border-box;
 }
 
-.profile-modal {
-    background-color: #fff;
+.profile-title {
+    font-size: 42px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.profile-subtitle {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 40px;
+}
+
+.profile-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1100px;
+    gap: 40px;
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
-    min-width: 300px;
-    max-width: 400px;
-    text-align: center;
-    animation: fadeIn 0.3s ease-in-out;
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }
 
-.profile-modal h2 {
-    margin-bottom: 20px;
+.profile-about {
+    flex: 1;
+    color: #333;
 }
 
-.profile-modal p {
-    font-size: 16px;
+.profile-about h2 {
+    font-size: 24px;
     margin-bottom: 10px;
 }
 
-.profile-buttons {
+.profile-about p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.credit {
+    font-size: 12px;
+    color: #888;
+    margin-top: 10px;
+}
+
+.profile-avatar-section {
+    flex: 0 0 180px;
     display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
-.profile-buttons button {
-    padding: 10px 20px;
-    background-color: #0044cc;
-    color: white;
-    border: none;
-    border-radius: 6px;
+.profile-avatar {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fdd835;
+    background-color: #f9f9f9;
+    margin-bottom: 12px;
+}
+
+.upload-button {
+    background-color: #fdd835;
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: #000;
+    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background 0.3s;
 }
 
-.profile-buttons button:hover {
-    background-color: #002c99;
+.upload-button:hover {
+    background-color: #fbc02d;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
+.profile-info {
+    flex: 1;
+    color: #333;
+}
+
+.profile-info h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.profile-info p {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.profile-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.logout-btn {
+        background-color: #333;
+    color: white;
+}
+
+.logout-btn:hover {
+    background-color: #c62828;
+}
+
+.back-btn {
+    background-color: #333;
+    color: white;
+}
+
+.back-btn:hover {
+    background-color: #c62828;
+}
+
+@media (max-width: 900px) {
+    .profile-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
-    to {
-        opacity: 1;
-        transform: scale(1);
+
+    .profile-about,
+    .profile-info {
+        width: 100%;
     }
+}
+.description-textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+.save-btn {
+    background-color: #333;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #5A5A5A;
+}
+
+.edit-btn {
+    background-color: #333;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #5A5A5A;
 }

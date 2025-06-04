@@ -1,8 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Link, NavLink} from 'react-router-dom';
 import './style/AboutUs.css';
 
 const AboutUs = () => {
+    const [menuOpen, setMenuOpen] = useState(false);
+    const toggleMenu = () => setMenuOpen(!menuOpen);
     return (
         <div>
             <header>
@@ -11,19 +13,27 @@ const AboutUs = () => {
                         <img src="/84c22203-25aa-4e04-9930-5243dc2d3c2d.png" width="200" height="120"/>
                     </Link>
                 </div>
-                <nav>
-                    <Link to="/">Home</Link>
-                    <Link to="/support">Support</Link>
-                    <Link to="/about">About Us</Link>
+                <nav className={menuOpen ? 'nav active' : 'nav'}>
+                    <NavLink to="/" onClick={() => setMenuOpen(false)} className="nav-link">
+                        Home
+                    </NavLink>
+                    <NavLink to="/support" onClick={() => setMenuOpen(false)}
+                             className="nav-link">
+                        Support
+                    </NavLink>
+                    <NavLink to="/about" onClick={() => setMenuOpen(false)}
+                             className="nav-link">
+                        About Us
+                    </NavLink>
                 </nav>
                 <Link to="/profile">
                     <img
-                        src="https://cdn-icons-png.flaticon.com/128/1144/1144709.png"
+                        src={localStorage.getItem('avatar') || "https://cdn-icons-png.flaticon.com/128/1144/1144709.png"}
                         alt="User"
                         title="User"
                         width="48"
                         height="48"
-                        style={{ cursor: 'pointer' }}
+                        style={{cursor: 'pointer', borderRadius: '50%'}}
                     />
                 </Link>
             </header>
@@ -49,7 +59,7 @@ const AboutUs = () => {
             <section className="contact-section">
                 <h2>Contact Us</h2>
                 <div className="social-links">
-                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
                         <img
                             src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png"
                             alt="Instagram"
