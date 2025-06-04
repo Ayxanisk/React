@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { saveAvatar } from './indexedDBUtils';
 import './style/Profile.css';
+import { updateUserPassword, deleteUserCredentials } from './indexedDBUtils';
 
 /**
  * Profile component displays user information and allows editing profile details
@@ -53,6 +54,45 @@ const Profile = ({ user, setIsLoggedIn, avatar, setAvatar }) => {
         localStorage.setItem(`${userId}_description`, description);
         setIsEditing(false);
     }, [userId, description]);
+    // Сброс пароля
+    const handleResetPassword = useCallback(async () => {
+        const newPass = prompt('Введите новый пароль (минимум 8 символов, включая заглавную, строчную букву, цифру и спецсимвол)');
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+        if (!newPass || !passwordRegex.test(newPass)) {
+            alert('Пароль ненадёжный или пустой');
+            return;
+        }
+
+        try {
+            await updateUserPassword(user.email, newPass);
+            alert('Пароль успешно обновлён');
+        } catch (err) {
+            console.error('Ошибка при обновлении пароля:', err);
+            alert('Ошибка при сбросе пароля');
+        }
+    }, [user]);
+
+// Удаление аккаунта
+    const handleDeleteAccount = useCallback(async () => {
+        const confirmDelete = window.confirm('Вы уверены, что хотите удалить аккаунт? Это действие необратимо.');
+
+        if (!confirmDelete) return;
+
+        try {
+            await deleteUserCredentials(user.email);
+            await saveAvatar(user.email, null); // удалить аватар
+
+            localStorage.removeItem('user');
+            localStorage.removeItem('email');
+            setIsLoggedIn(false);
+            navigate('/');
+            alert('Аккаунт удалён');
+        } catch (err) {
+            console.error('Ошибка при удалении аккаунта:', err);
+            alert('Не удалось удалить аккаунт');
+        }
+    }, [user, setIsLoggedIn, navigate]);
 
     // Render profile component
     return (
@@ -165,6 +205,22 @@ const Profile = ({ user, setIsLoggedIn, avatar, setAvatar }) => {
                             >
                                 Back
                             </button>
+                            <button
+                                className="centered-profile-btn centered-profile-reset-btn"
+                                onClick={handleResetPassword}
+                                aria-label="Reset password"
+                            >
+                                Reset password
+                            </button>
+                            <button
+                                className="centered-profile-btn centered-profile-delete-btn"
+                                onClick={handleDeleteAccount}
+                                style={{ color: 'red' }}
+                                aria-label="Delete account"
+                            >
+                                Delete account
+                            </button>
+
                         </div>
                     </div>
                 </div>

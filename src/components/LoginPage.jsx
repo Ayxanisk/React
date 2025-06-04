@@ -7,6 +7,9 @@ import {
     Box
 } from '@mui/material';
 import { GoogleLogin } from '@react-oauth/google';
+import { InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useState } from 'react';
 
 /**
  * LoginPage component for user authentication
@@ -35,6 +38,8 @@ const LoginPage = ({
                        handleGoogleSuccess,
                        isSmall
                    }) => {
+    const [showPassword, setShowPassword] = useState(false);
+
     return (
         <Box
             sx={{
@@ -84,13 +89,27 @@ const LoginPage = ({
                     />
                     <TextField
                         label="Password"
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         variant="outlined"
                         fullWidth
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setShowPassword((prev) => !prev)}
+                                        edge="end"
+                                        aria-label="toggle password visibility"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
                     />
+
                     <Button
                         type="submit"
                         variant="contained"

@@ -41,7 +41,7 @@ import { getAvatar } from './components/indexedDBUtils';
 import theme from './theme';
 import './components/style/App.css';
 import LoginPage from './components/LoginPage';
-
+import { saveUserCredentials, getUserCredentials } from './components/indexedDBUtils';
 /**
  * Main App component
  * @returns {JSX.Element} The App component
@@ -87,29 +87,62 @@ const App = () => {
     }, [user]);
 
     // Авторизация через email/password
-    const handleLogin = useCallback((e) => {
+    const handleLogin = useCallback(async (e) => {
         e.preventDefault();
-        const savedUser = JSON.parse(localStorage.getItem('user'));
 
-        if (savedUser && savedUser.email === email && savedUser.password === password) {
-            setUser(savedUser);
-            setIsLoggedIn(true);
-        } else {
-            alert('Неверный email или пароль');
+        try {
+            const storedUser = await getUserCredentials(email);
+            if (storedUser && storedUser.password === password) {
+                setUser(storedUser);
+                setIsLoggedIn(true);
+                localStorage.setItem('email', email); // сохраняем email для автологина
+            } else {
+                alert('Неверный email или пароль');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Ошибка при входе');
         }
     }, [email, password]);
+
 
 
     // Регистрация (аналогично логину пока без API)
-    const handleRegister = useCallback((e) => {
+    const handleRegister = useCallback(async (e) => {
         e.preventDefault();
-        if (email && password) {
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+        try {
+            if (!email || !password) {
+                alert('Введите email и пароль');
+                return;
+            }
+
+            if (!passwordRegex.test(password)) {
+                alert('Пароль должен содержать минимум 8 символов, включая заглавные, строчные буквы, цифры и спецсимволы');
+                return;
+            }
+
+            const existingUser = await getUserCredentials(email);
+            if (existingUser) {
+                alert('Пользователь с таким email уже зарегистрирован');
+                return;
+            }
+
+            await saveUserCredentials(email, password);
             const userData = { email, password };
-            localStorage.setItem('user', JSON.stringify(userData));
             setUser(userData);
             setIsLoggedIn(true);
+            localStorage.setItem('email', email);
+        } catch (error) {
+            console.error('Register error:', error);
+            alert('Ошибка при регистрации');
         }
     }, [email, password]);
+
+
+
 
 
     const handleGoogleSuccess = useCallback((credentialResponse) => {
@@ -466,7 +499,7 @@ const App = () => {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <GoogleOAuthProvider clientId="205196465877-0neriok38upulqssmrufdpnj5cb60486.apps.googleusercontent.com">
+            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
                 <Router>
                     <Routes>
                         <Route
