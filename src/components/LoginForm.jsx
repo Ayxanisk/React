@@ -6,12 +6,11 @@ const LoginForm = ({ onLogin }) => {
     const [error, setError] = useState('');
 
     const handleSubmit = (e) => {
-        e.preventDefault(); // предотвращает перезагрузку формы
+        e.preventDefault();
 
-        // Примитивная проверка логина/пароля
         if (email === 'admin@example.com' && password === 'admin') {
             setError('');
-            onLogin(); // вызывает колбэк авторизации
+            onLogin();
         } else {
             setError('Invalid credentials');
         }
