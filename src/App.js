@@ -89,50 +89,38 @@ const App = () => {
     // Авторизация через email/password
     const handleLogin = useCallback((e) => {
         e.preventDefault();
-        if (email && password) {
-            setUser({ email });
+        const savedUser = JSON.parse(localStorage.getItem('user'));
+
+        if (savedUser && savedUser.email === email && savedUser.password === password) {
+            setUser(savedUser);
             setIsLoggedIn(true);
-            localStorage.setItem('email', email);
         } else {
-            alert('Please fill in all fields');
+            alert('Неверный email или пароль');
         }
     }, [email, password]);
+
 
     // Регистрация (аналогично логину пока без API)
     const handleRegister = useCallback((e) => {
         e.preventDefault();
         if (email && password) {
-            setUser({ email });
+            const userData = { email, password };
+            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
             setIsLoggedIn(true);
-            localStorage.setItem('email', email);
-        } else {
-            alert('Please fill in all fields');
         }
     }, [email, password]);
 
-    // Авторизация через Google
+
     const handleGoogleSuccess = useCallback((credentialResponse) => {
         try {
             const decoded = jwtDecode(credentialResponse.credential);
-
-            // Проверка допустимых доменов (опционально)
-            const validDomains = [
-                'react-zeta-liard.vercel.app',
-                'react-git-main-ayxans-projects-e9372316.vercel.app',
-            ];
-
-            const tokenDomain = decoded.hd || new URL(decoded.email.split('@')[1]).hostname;
-
-            if (!validDomains.includes(tokenDomain)) {
-                throw new Error('Unauthorized domain');
-            }
-
             setUser(decoded);
             setIsLoggedIn(true);
             localStorage.setItem('user', JSON.stringify(decoded));
         } catch (err) {
-            console.error('Google authentication error:', err);
-            alert(`Authentication failed: ${err.message}`);
+            console.error('Google login decode error:', err);
+            alert('Failed to log in via Google');
         }
     }, []);
 
@@ -478,7 +466,7 @@ const App = () => {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+            <GoogleOAuthProvider clientId="205196465877-0neriok38upulqssmrufdpnj5cb60486.apps.googleusercontent.com">
                 <Router>
                     <Routes>
                         <Route
