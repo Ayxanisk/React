@@ -1,25 +1,11 @@
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f5f5f5;
-}
-
-header h1 {
-    font-size: 24px;
-}
-
-header nav a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #333;
-}
+/* Navigation Links - kept for compatibility with existing nav links */
 .nav-link {
     position: relative;
     padding: 0.5rem;
     text-decoration: none;
-    color: black;
-    transition: color 0.3s;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
 .nav-link::after {
@@ -29,109 +15,74 @@ header nav a {
     left: 0;
     width: 0%;
     height: 3px;
-    background-color: #3498db;
+    background-color: #1976d2; /* Material UI primary color */
     border-radius: 2px;
     transition: width 0.3s ease;
 }
 
-.nav-link:hover::after {
-    width: 100%;
+.nav-link:hover {
+    color: #1976d2;
 }
 
-.nav-link.active {
-    font-weight: bold;
-}
-
+.nav-link:hover::after,
 .nav-link.active::after {
     width: 100%;
 }
 
-
-header img {
-    border-radius: 50%;
+.nav-link.active {
+    font-weight: 700;
+    color: #1976d2;
 }
 
-.support-intro {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 60px 40px;
-    background-color: #e8f0fe;
+/* Custom animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.support-text {
-    flex: 1;
-    padding-right: 40px;
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
-.support-text h1 {
-    font-size: 36px;
-    margin-bottom: 20px;
+/* Material UI theme overrides and custom styles */
+.MuiPaper-root {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.support-text p {
-    font-size: 18px;
-    color: #333;
+.MuiButton-root {
+    text-transform: none;
 }
 
-.support-image img {
-    width: 320px;
+.MuiAccordion-root {
+    margin-bottom: 16px !important;
 }
 
-.support-form-section {
-    padding: 60px 40px;
-    background-color: #FFF6EB;
-    text-align: center;
+.MuiAccordionSummary-content {
+    margin: 12px 0 !important;
 }
 
-.support-form-section h2 {
-    font-size: 28px;
-    margin-bottom: 30px;
-}
+/* Mobile responsiveness enhancements */
+@media (max-width: 600px) {
+    .nav-link {
+        padding: 0.75rem;
+        font-size: 16px;
+    }
 
-.support-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    max-width: 500px;
-    margin: 0 auto;
-}
+    .MuiTypography-h1 {
+        font-size: 2rem !important;
+    }
 
-.support-form input,
-.support-form textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-}
-.support-form button {
-    padding: 10px 20px;
-    background-color: #000;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    cursor: pointer;
-    font-weight: bold;
-}
+    .MuiTypography-h2 {
+        font-size: 1.75rem !important;
+    }
 
-.support-form textarea {
-    height: 120px;
-    resize: vertical;
-}
+    .MuiTypography-h3 {
+        font-size: 1.5rem !important;
+    }
 
-.support-footer{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    padding: 20px;
-}
-.faq-section{
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    background-color:#e8f0fe;
-    padding: 20px;
+    .MuiContainer-root {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
 }

@@ -1,29 +1,11 @@
-/* Header */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #FEF8F2;
-    margin-left: 20px;
-    margin-right: 20px;
-    height: 90px;
-}
-
-header h1 {
-    font-size: 24px;
-}
-
-header nav a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #333;
-}
+/* Navigation Links - kept for compatibility with existing nav links */
 .nav-link {
     position: relative;
     padding: 0.5rem;
     text-decoration: none;
-    color: black;
-    transition: color 0.3s;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
 .nav-link::after {
@@ -33,96 +15,32 @@ header nav a {
     left: 0;
     width: 0%;
     height: 3px;
-    background-color: #3498db;
+    background-color: #1976d2; /* Material UI primary color */
     border-radius: 2px;
     transition: width 0.3s ease;
 }
 
-/* Подчёркивание при наведении */
-.nav-link:hover::after {
-    width: 100%;
+.nav-link:hover {
+    color: #1976d2;
 }
 
-/* Подчёркивание и жирный текст при активной вкладке */
-.nav-link.active {
-    font-weight: bold;
-}
-
+.nav-link:hover::after,
 .nav-link.active::after {
     width: 100%;
 }
 
-
-header img {
-    border-radius: 50%;
+.nav-link.active {
+    font-weight: 700;
+    color: #1976d2;
 }
 
-/* Intro section */
-.about-intro {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 60px 40px;
-    background-color: #e8f0fe;
+/* Custom animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.about-text {
-    flex: 1;
-    padding-right: 40px;
-}
-
-.about-text h1 {
-    font-size: 36px;
-    margin-bottom: 20px;
-}
-
-.about-text p {
-    font-size: 18px;
-    color: #333;
-}
-
-.about-image img {
-    width: 320px;
-}
-
-/* Contact Section */
-.contact-section {
-    padding: 60px 40px;
-    background-color: #fff;
-    text-align: center;
-}
-
-.contact-section h2 {
-    font-size: 28px;
-    margin-bottom: 40px;
-}
-
-.social-links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-.social-links a {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    text-decoration: none;
-    font-size: 18px;
-    color: #333;
-    transition: color 0.3s;
-}
-
-.social-links a:hover {
-    color: #4285f4;
-}
-
-/* Footer */
-.about-footer {
-    background-color: #f5f5f5;
-    text-align: center;
-    padding: 20px;
-    font-size: 14px;
-    color: #555;
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
 }
