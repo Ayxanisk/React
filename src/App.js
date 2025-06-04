@@ -114,12 +114,25 @@ const App = () => {
     const handleGoogleSuccess = useCallback((credentialResponse) => {
         try {
             const decoded = jwtDecode(credentialResponse.credential);
+
+            // Проверка допустимых доменов (опционально)
+            const validDomains = [
+                'react-zeta-liard.vercel.app',
+                'react-git-main-ayxans-projects-e9372316.vercel.app'
+            ];
+
+            const tokenDomain = decoded.hd || new URL(decoded.email.split('@')[1]).hostname;
+
+            if (!validDomains.includes(tokenDomain)) {
+                throw new Error('Unauthorized domain');
+            }
+
             setUser(decoded);
             setIsLoggedIn(true);
             localStorage.setItem('user', JSON.stringify(decoded));
         } catch (err) {
-            console.error('Google login decode error:', err);
-            alert('Failed to log in via Google');
+            console.error('Google authentication error:', err);
+            alert(`Authentication failed: ${err.message}`);
         }
     }, []);
 
