@@ -334,4 +334,229 @@
     .warning-text {
         font-size: 13px;
     }
+}/* Общие переменные для тем */
+:root {
+    /* Светлая тема */
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --card2-bg: #f9f9f9;
+    --text-color: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --error-color: #d32f2f;
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --danger-color: #dc2626;
+    --danger-bg: #fee2e2;
+    --warning-color: #b91c1c;
+    --success-color: #15803d;
+    --icon-color: #666666;
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #c1c1c1;
+    --scrollbar-hover: #a8a8a8;
 }
+
+.dark-theme {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --card2-bg: #2d2d2d;
+    --text-color: #e0e0e0;
+    --text-secondary: #aaaaaa;
+    --border-color: #444444;
+    --error-color: #f44336;
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --danger-color: #fecaca;
+    --danger-bg: #7f1d1d;
+    --warning-color: #fecaca;
+    --success-color: #bbf7d0;
+    --icon-color: #aaaaaa;
+    --scrollbar-track: #2d2d2d;
+    --scrollbar-thumb: #555555;
+    --scrollbar-hover: #777777;
+}
+
+/* Settings specific styles */
+.settings-main {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.settings-section {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.settings-section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* Password section */
+.password-section {
+    margin-bottom: 30px;
+}
+
+.password-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 17px;
+    color: var(--text-color);
+}
+
+/* Delete section */
+.delete-section {
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.delete-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 17px;
+    color: var(--text-color);
+}
+
+.warning-text {
+    margin: 0 0 10px 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.warning-text.strong {
+    color: var(--warning-color);
+    font-weight: 500;
+}
+
+.delete-confirmation {
+    background-color: var(--danger-bg);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.delete-confirmation p {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--danger-color);
+}
+
+/* Theme section */
+.theme-section h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 17px;
+    color: var(--text-color);
+}
+
+.theme-section p {
+    margin: 0 0 15px 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.theme-toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--card2-bg);
+    border-radius: 6px;
+    padding: 12px 15px;
+}
+
+.error-message {
+    color: var(--error-color);
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* SettingsPage.css */
+.profile-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow: auto;
+}
+
+.profile-container {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 1200px;
+    padding: 20px;
+    position: relative;
+    color: var(--text-color);
+}
+
+.settings-container {
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 20px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.profile-sidebar {
+    padding: 15px;
+    background-color: var(--card2-bg);
+    border-radius: 8px;
+    height: 70vh;
+    overflow-y: auto;
+}
+
+.settings-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.settings-scrollable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.settings-scrollable::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 4px;
+}
+
+.settings-scrollable::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+
+.settings-scrollable::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-hover);
+}
+

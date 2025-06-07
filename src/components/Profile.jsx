@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { saveAvatar, updateUserName } from './indexedDBUtils'; // Добавлен импорт updateUserName
+import { saveAvatar } from './indexedDBUtils';
 import './style/Profile.css';
 import CloseIcon from '@mui/icons-material/Close';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
@@ -25,8 +25,7 @@ const Profile = ({ user, setIsLoggedIn, avatar, setAvatar, updateUserName }) => 
 
     useEffect(() => {
         const savedDescription = localStorage.getItem(`${userId}_description`);
-        const savedName = localStorage.getItem(`${userId}_name`); // Загрузка сохраненного имени
-
+        const savedName = localStorage.getItem(`${userId}_name`);
         if (savedDescription) setDescription(savedDescription);
         if (savedName) setNewName(savedName);
     }, [userId]);
@@ -55,7 +54,6 @@ const Profile = ({ user, setIsLoggedIn, avatar, setAvatar, updateUserName }) => 
         setIsEditing(false);
     }, [userId, description]);
 
-    // ОБНОВЛЕННЫЙ обработчик сохранения имени
     const handleNameSave = useCallback(async () => {
         if (!newName.trim()) {
             setNameError('Name cannot be empty');
@@ -68,15 +66,8 @@ const Profile = ({ user, setIsLoggedIn, avatar, setAvatar, updateUserName }) => 
         }
 
         try {
-            // Сохраняем имя в IndexedDB
             await updateUserName(user.email, newName);
-
-            // Обновляем состояние в родительском компоненте
-            updateUserName(newName);
-
-            // Сохраняем в localStorage
             localStorage.setItem(`${userId}_name`, newName);
-
             setIsEditingName(false);
             setNameError('');
         } catch (error) {
@@ -242,7 +233,7 @@ const Profile = ({ user, setIsLoggedIn, avatar, setAvatar, updateUserName }) => 
                         </div>
                         <div className="profile-section">
                             <button className="profile-btn logout-btn" onClick={handleLogout}>
-                                <ExitToAppIcon fontSize="small" className="button-icon" color="error" />
+                                <ExitToAppIcon fontSize="small" className="button-icon" />
                                 Logout
                             </button>
                         </div>

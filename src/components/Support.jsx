@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, {useState, useCallback, useMemo} from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import {
     AppBar,
@@ -37,11 +37,12 @@ import {
 import './style/Support.css';
 import './style/App.css';
 import Header from "./Header";
+import getTheme from "../theme";
 
-const Support = ({ avatar }) => {
-    const avatarSrc = avatar || "https://cdn-icons-png.flaticon.com/128/1144/1144709.png";
-    const [menuOpen, setMenuOpen] = useState(false);
+const Support = ({ avatar, themeMode,toggleTheme }) => {
+
     const theme = useTheme();
+    const [menuOpen, setMenuOpen] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     // Form state
@@ -69,7 +70,7 @@ const Support = ({ avatar }) => {
     return (
         <Box sx={{ flexGrow: 1 }}>
             {/* AppBar */}
-            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile}/>
+            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile} themeMode={themeMode} toggleTheme={toggleTheme} />
 
             {/* Drawer for mobile */}
             <Drawer anchor="left" open={menuOpen} onClose={closeMenu}>
@@ -85,7 +86,7 @@ const Support = ({ avatar }) => {
             </Drawer>
 
             {/* Hero Section */}
-            <Paper sx={{ backgroundColor: '#e8f0fe', py: { xs: 4, md: 8 }, px: { xs: 2, md: 5 } }}>
+            <Paper sx={{ backgroundColor: theme.palette.background.default, py: { xs: 4, md: 8 }, px: { xs: 2, md: 5 } }}>
                 <Container maxWidth="lg">
                     <Grid container spacing={4} alignItems="center">
                         <Grid item xs={12} md={7}>
@@ -110,7 +111,7 @@ const Support = ({ avatar }) => {
             {/* Contact Form */}
             <Container maxWidth="md" sx={{ py: { xs: 5, md: 8 } }}>
                 <Box textAlign="center" mb={5}>
-                    <ContactSupportIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
+                    <ContactSupportIcon sx={{ fontSize: 40, color: theme.palette.text.primary, mb: 2 }} />
                     <Typography variant="h3" fontWeight={600}>
                         Contact Support
                     </Typography>
@@ -161,10 +162,10 @@ const Support = ({ avatar }) => {
             </Container>
 
             {/* FAQ Section */}
-            <Paper sx={{ backgroundColor: '#f5f7fa', py: { xs: 5, md: 8 } }}>
+            <Paper sx={{ backgroundColor: theme.palette.background.default, py: { xs: 5, md: 8 } }}>
                 <Container maxWidth="md">
                     <Box textAlign="center" mb={5}>
-                        <QuestionIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
+                        <QuestionIcon sx={{ fontSize: 40, color: theme.palette.text.primary, mb: 2 }} />
                         <Typography variant="h3" fontWeight={600}>Frequently Asked Questions</Typography>
                     </Box>
 
@@ -205,6 +206,22 @@ const Support = ({ avatar }) => {
                     Message sent successfully!
                 </Alert>
             </Snackbar>
+
+            <Box component="footer" sx={{
+                py: 3,
+                textAlign: 'center',
+                backgroundColor: theme.palette.background.default,
+                mt: 'auto'
+            }}>
+                <Container>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        &copy; 2025 Education Inc. All rights reserved.
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Contact us: support@education.com
+                    </Typography>
+                </Container>
+            </Box>
         </Box>
     );
 };

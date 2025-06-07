@@ -1,12 +1,10 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {BrowserRouter as Router, Routes, Route, Link, NavLink} from 'react-router-dom';
-import {GoogleOAuthProvider, GoogleLogin} from '@react-oauth/google';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
+import {BrowserRouter as Router, Routes, Route, NavLink} from 'react-router-dom';
+import {GoogleOAuthProvider} from '@react-oauth/google';
 import {jwtDecode} from 'jwt-decode';
 import {
     ThemeProvider,
     CssBaseline,
-    AppBar,
-    Toolbar,
     Box,
     Container,
     Typography,
@@ -17,18 +15,14 @@ import {
     CardContent,
     CardActions,
     Avatar,
-    IconButton,
     Drawer,
     List,
     ListItem,
     ListItemText,
-    Paper,
     Chip,
-    useMediaQuery,
-    useTheme
+    useMediaQuery
 } from '@mui/material';
 import {
-    Menu as MenuIcon,
     Send as SendIcon,
     School as SchoolIcon,
     People as PeopleIcon,
@@ -38,12 +32,12 @@ import Support from './components/Support';
 import AboutUs from './components/AboutUs';
 import Profile from './components/Profile';
 import {getAvatar} from './components/indexedDBUtils';
-import theme from './theme';
 import './components/style/App.css';
 import LoginPage from './components/LoginPage';
 import {getUserCredentials, saveUserCredentials} from './components/indexedDBUtils';
 import SettingsPage from './components/SettingsPage';
 import Header from "./components/Header";
+import getTheme from "./theme";
 
 /**
  * Main App component
@@ -57,8 +51,17 @@ const App = () => {
     const [user, setUser] = useState(null);
     const [avatar, setAvatar] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [themeMode, setThemeMode] = useState('light'); // По умолчанию темная тема
 
-    const theme = useTheme();
+    // Создаем тему на основе выбранного режима
+    const theme = useMemo(() => getTheme(themeMode), [themeMode]);
+
+    const toggleTheme = useCallback(() => {
+        const newMode = themeMode === 'light' ? 'dark' : 'light';
+        setThemeMode(newMode);
+        localStorage.setItem('theme', newMode);
+    }, [themeMode]);
+
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -91,7 +94,6 @@ const App = () => {
             name: newName
         }));
     };
-    // Загрузка аватара, если есть email
     useEffect(() => {
         if (user?.email) {
             getAvatar(user.email).then(setAvatar);
@@ -107,7 +109,7 @@ const App = () => {
             if (storedUser && storedUser.password === password) {
                 setUser(storedUser);
                 setIsLoggedIn(true);
-                localStorage.setItem('email', email); // сохраняем email для автологина
+                localStorage.setItem('email', email);
             } else {
                 alert('Неверный email или пароль');
             }
@@ -168,12 +170,10 @@ const App = () => {
 
 
     // Home page component
-    const HomePage = () => (
+    const HomePage = ({ user, email, themeMode, toggleTheme}) => (
         <Box sx={{flexGrow: 1}}>
-            {/* Header with Material UI AppBar */}
-            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile} setIsLoggedIn={setIsLoggedIn}/>
+            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile} setIsLoggedIn={setIsLoggedIn} themeMode={themeMode} toggleTheme={toggleTheme}/>
 
-            {/* Mobile navigation drawer */}
             <Drawer
                 anchor="left"
                 open={menuOpen}
@@ -197,9 +197,9 @@ const App = () => {
             {/* Hero section */}
             <Box
                 sx={{
-                    bgcolor: '#FFF6EB',
-                    py: {xs: 4, md: 6},
-                    px: {xs: 2, md: 5}
+                    bgcolor: theme.palette.background.paper,
+                    py: { xs: 4, md: 6 },
+                    px: { xs: 2, md: 5 }
                 }}
             >
                 <Container maxWidth="lg">
@@ -314,8 +314,8 @@ const App = () => {
             {/* Brand logos section */}
             <Box
                 sx={{
-                    bgcolor: '#F5F2F0',
-                    py: {xs: 3, md: 4},
+                    bgcolor: theme.palette.background.default,
+                    py: { xs: 3, md: 4 },
                     px: 2
                 }}
             >
@@ -350,8 +350,9 @@ const App = () => {
             {/* Education section */}
             <Box
                 sx={{
-                    py: {xs: 5, md: 8},
-                    px: 2
+                    py: { xs: 5, md: 8 },
+                    px: 2,
+                    bgcolor: theme.palette.background.default,
                 }}
             >
                 <Container maxWidth="lg">
@@ -375,19 +376,19 @@ const App = () => {
                                 title: 'Teachers',
                                 icon: <PeopleIcon fontSize="large"/>,
                                 description: 'Bring the power of the digital age into your classroom. Enable your students to make innovative school projects.',
-                                color: '#ECEBFF'
+                                bgcolor: theme.palette.mode === 'light' ? '#ECEBFF' : '#4A4458'
                             },
                             {
                                 title: 'Students',
                                 icon: <SchoolIcon fontSize="large"/>,
                                 description: 'Get bold and creative with your school assignments. Flipstack allows you to unleash your imagination in the easiest possible way.',
-                                color: '#FFF5CF'
-                            },
+                                bgcolor: theme.palette.mode === 'light' ? '#FFF5CF' : '#4A3C39'
+                             },
                             {
                                 title: 'Schools',
                                 icon: <BusinessIcon fontSize="large"/>,
                                 description: 'Publish appealing school prospectus, handbooks and admission guides to inform students, teachers, applicants and parents.',
-                                color: '#FFE4E1'
+                                bgcolor: theme.palette.mode === 'light' ? '#FFE4E1' : '#4A3636'
                             }
                         ].map((card, index) => (
                             <Grid item xs={12} sm={6} md={4} key={index}>
@@ -395,7 +396,7 @@ const App = () => {
                                     elevation={3}
                                     sx={{
                                         height: '100%',
-                                        bgcolor: card.color,
+                                        bgcolor: card.bgcolor,
                                         borderRadius: 3,
                                         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                                         '&:hover': {
@@ -406,7 +407,10 @@ const App = () => {
                                 >
                                     <CardContent sx={{p: 3}}>
                                         <Box sx={{display: 'flex', alignItems: 'center', mb: 2, gap: 1}}>
-                                            <Avatar sx={{bgcolor: 'primary.main'}}>
+                                            <Avatar sx={{
+                                                bgcolor: 'primary.main',
+                                                color: theme.palette.getContrastText(theme.palette.primary.main)
+                                            }}>
                                                 {card.icon}
                                             </Avatar>
                                             <Typography variant="h5" component="h3" fontWeight={600}>
@@ -437,8 +441,8 @@ const App = () => {
             <Box component="footer" sx={{
                 py: 3,
                 textAlign: 'center',
-                backgroundColor: '#f5f5f5',
-                mt: 'auto'
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
             }}>
                 <Container>
                     <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
@@ -461,7 +465,7 @@ const App = () => {
                     <Routes>
                         <Route
                             path="/"
-                            element={isLoggedIn ? <HomePage/> : <LoginPage
+                            element={isLoggedIn ? <HomePage themeMode={themeMode} toggleTheme={toggleTheme}/> : <LoginPage
                                 isRegistering={isRegistering}
                                 setIsRegistering={setIsRegistering}
                                 email={email}
@@ -472,10 +476,12 @@ const App = () => {
                                 handleRegister={handleRegister}
                                 handleGoogleSuccess={handleGoogleSuccess}
                                 isSmall={isSmall}
+                                themeMode={themeMode}
+                                toggleTheme={toggleTheme}
                             />}
                         />
-                        <Route path="/support" element={<Support avatar={avatar}/>}/>
-                        <Route path="/about" element={<AboutUs avatar={avatar}/>}/>
+                        <Route path="/support" element={<Support avatar={avatar} themeMode={themeMode} toggleTheme={toggleTheme}/>}/>
+                        <Route path="/about" element={<AboutUs avatar={avatar} themeMode={themeMode} toggleTheme={toggleTheme}/>}/>
                         <Route
                             path="/profile"
                             element={<Profile
@@ -483,9 +489,11 @@ const App = () => {
                                 setIsLoggedIn={setIsLoggedIn}
                                 avatar={avatar}
                                 setAvatar={setAvatar}
-                                updateUserName={updateUserName}/>}
-                                />
-                        <Route path="/settings" element={<SettingsPage user={user} setIsLoggedIn={setIsLoggedIn}/>}/>
+                                updateUserName={updateUserName}
+                                themeMode={themeMode}
+                                toggleTheme={toggleTheme}/>}
+                        />
+                        <Route path="/settings" element={<SettingsPage user={user} setIsLoggedIn={setIsLoggedIn} themeMode={themeMode} toggleTheme={toggleTheme}/>}/>
                 </Routes>
             </Router>
         </GoogleOAuthProvider>

@@ -320,7 +320,7 @@
 .logout-btn {
     background-color: #fee2e2;
     color: #dc2626;
-    width: 50%;
+    width: 100%;
     margin-top: 20px;
 }
 
@@ -452,7 +452,7 @@
 .error-icon {
     margin-right: 5px;
 }
-/* Мобильная адаптация */
+
 @media (max-width: 768px) {
     .profile-container {
         width: 100%;
@@ -523,7 +523,6 @@
         font-size: 13px;
     }
 
-    /* Специальные стили для вертикальной ориентации */
     @media (orientation: portrait) {
         .profile-container {
             padding: 10px;
@@ -539,7 +538,7 @@
     }
 }
 
-/* Дополнительная адаптация для очень маленьких экранов */
+
 @media (max-width: 480px) {
     .profile-header h1 {
         font-size: 18px;
@@ -562,4 +561,229 @@
     .warning-text {
         font-size: 13px;
     }
+}/* Общие переменные для тем (должны совпадать с SettingsPage.css) */
+:root {
+    /* Светлая тема */
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --card2-bg: #f9f9f9;
+    --text-color: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --error-color: #d32f2f;
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --danger-color: #dc2626;
+    --danger-bg: #fee2e2;
+    --warning-color: #b91c1c;
+    --success-color: #15803d;
+    --icon-color: #666666;
 }
+
+.dark-theme {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --card2-bg: #2d2d2d;
+    --text-color: #e0e0e0;
+    --text-secondary: #aaaaaa;
+    --border-color: #444444;
+    --error-color: #f44336;
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --danger-color: #fecaca;
+    --danger-bg: #7f1d1d;
+    --warning-color: #fecaca;
+    --success-color: #bbf7d0;
+    --icon-color: #aaaaaa;
+}
+
+/* Base styles */
+.profile-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.profile-container {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    height: 85vh;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 25px;
+    color: var(--text-color);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Grid layout */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 25px;
+}
+
+/* Sidebar styles */
+.profile-sidebar {
+    background-color: var(--card2-bg);
+    border-radius: 8px;
+    padding: 20px;
+    height: 70vh;
+}
+
+.profile-sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.profile-menu-item {
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.profile-menu-item.active {
+    background-color: rgba(79, 70, 229, 0.2);
+    color: var(--primary-color);
+}
+
+/* Main content styles */
+.profile-section {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.profile-section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: var(--text-color);
+}
+.avatar-upload-button{
+    background-color: var(--card-bg);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.storage-section {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    height: fit-content;
+}
+
+.edit-btn, .password-btn {
+    background-color: rgba(79, 70, 229, 0.1);
+    color: var(--primary-color);
+}
+
+.edit-btn:hover, .password-btn:hover {
+    background-color: rgba(79, 70, 229, 0.2);
+}
+
+.save-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.logout-btn {
+    background-color: var(--danger-bg);
+    color: var(--danger-color);
+}
+
+.logout-btn:hover {
+    background-color: rgba(220, 38, 38, 0.2);
+}
+
+.delete-btn {
+    background-color: var(--danger-bg);
+    color: var(--danger-color);
+}
+
+.delete-btn:hover {
+    background-color: rgba(220, 38, 38, 0.2);
+}
+
+.confirm-delete-btn {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.confirm-delete-btn:hover {
+    background-color: var(--warning-color);
+}
+.profile-menu-item {
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.name-edit-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.name-input {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.name-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+}
+

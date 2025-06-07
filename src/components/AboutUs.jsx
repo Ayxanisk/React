@@ -1,19 +1,16 @@
-import React, { useState, useCallback } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, {useState, useCallback} from 'react';
+import { NavLink } from 'react-router-dom';
 import './style/AboutUs.css';
 import './style/App.css';
 
 // Material UI imports
 import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
+  Typography,
   Container, 
   Grid, 
   Box, 
   Avatar, 
-  IconButton, 
-  Drawer, 
+  Drawer,
   List, 
   ListItem, 
   ListItemText, 
@@ -26,7 +23,6 @@ import {
   Divider
 } from '@mui/material';
 import { 
-  Menu as MenuIcon, 
   Instagram as InstagramIcon,
   Telegram as TelegramIcon,
   WhatsApp as WhatsAppIcon,
@@ -41,11 +37,9 @@ import Header from "./Header";
  * @param {string} props.avatar - User avatar URL
  * @returns {JSX.Element} The AboutUs component
  */
-const AboutUs = ({ avatar }) => {
-    // Use provided avatar or fallback to default
-    const avatarSrc = avatar || "https://cdn-icons-png.flaticon.com/128/1144/1144709.png";
-    const [menuOpen, setMenuOpen] = useState(false);
+const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
     const theme = useTheme();
+    const [menuOpen, setMenuOpen] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     // Toggle mobile menu
@@ -57,7 +51,7 @@ const AboutUs = ({ avatar }) => {
     return (
         <Box sx={{ flexGrow: 1 }}>
             {/* Header with Material UI AppBar */}
-            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile}/>
+            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile} themeMode={themeMode} toggleTheme={toggleTheme} />
 
             {/* Mobile navigation drawer */}
             <Drawer
@@ -84,7 +78,7 @@ const AboutUs = ({ avatar }) => {
             <Paper 
                 elevation={0} 
                 sx={{ 
-                    backgroundColor: '#e8f0fe', 
+                    backgroundColor: theme.palette.background.default,
                     py: { xs: 4, md: 8 }, 
                     px: { xs: 2, md: 5 },
                     borderRadius: 0
@@ -103,7 +97,7 @@ const AboutUs = ({ avatar }) => {
                                 </Typography>
                                 <Typography variant="body1" sx={{ 
                                     fontSize: { xs: '1rem', md: '1.2rem' },
-                                    color: 'text.secondary',
+                                    color: theme.palette.text.primary,
                                     maxWidth: '600px'
                                 }}>
                                     We are committed to providing high-quality educational content and support to
@@ -140,7 +134,7 @@ const AboutUs = ({ avatar }) => {
             {/* Contact section */}
             <Container maxWidth="md" sx={{ py: { xs: 5, md: 8 } }}>
                 <Box textAlign="center" mb={5}>
-                    <ContactMailIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
+                    <ContactMailIcon sx={{ fontSize: 40, color: theme.palette.text.primary, mb: 2 }} />
                     <Typography variant="h3" component="h2" gutterBottom sx={{ 
                         fontSize: { xs: '1.8rem', md: '2.2rem' },
                         fontWeight: 600
@@ -155,19 +149,19 @@ const AboutUs = ({ avatar }) => {
                             icon: <InstagramIcon fontSize="large" />, 
                             text: '@education_platform', 
                             link: 'https://instagram.com',
-                            color: '#E1306C'
+                            color: theme.palette.text.primary
                         },
                         { 
                             icon: <TelegramIcon fontSize="large" />, 
                             text: 't.me/education_platform', 
                             link: 'https://t.me/education_platform',
-                            color: '#0088cc'
+                            color: theme.palette.text.primary
                         },
                         { 
                             icon: <WhatsAppIcon fontSize="large" />, 
                             text: '+1 (234) 567-890', 
                             link: 'https://wa.me/1234567890',
-                            color: '#25D366'
+                            color: theme.palette.text.primary
                         }
                     ].map((item, index) => (
                         <Grid item xs={12} sm={6} md={4} key={index}>
@@ -219,10 +213,10 @@ const AboutUs = ({ avatar }) => {
             </Container>
 
             {/* Mission section */}
-            <Paper elevation={0} sx={{ backgroundColor: '#f5f7fa', py: { xs: 5, md: 8 }, px: { xs: 2, md: 0 } }}>
+            <Paper elevation={0} sx={{ backgroundColor: theme.palette.background.default, py: { xs: 5, md: 8 }, px: { xs: 2, md: 0 } }}>
                 <Container maxWidth="md">
                     <Box textAlign="center" mb={5}>
-                        <SchoolIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
+                        <SchoolIcon sx={{ fontSize: 40, color: theme.palette.text.primary, mb: 2 }} />
                         <Typography variant="h3" component="h2" gutterBottom sx={{ 
                             fontSize: { xs: '1.8rem', md: '2.2rem' },
                             fontWeight: 600
@@ -251,7 +245,7 @@ const AboutUs = ({ avatar }) => {
                                         textAlign: 'center',
                                         p: 3,
                                         borderRadius: 2,
-                                        bgcolor: 'background.paper',
+                                        bgcolor: theme.palette.background.default,
                                         boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
                                         height: '100%',
                                         transition: 'transform 0.3s ease',
@@ -280,7 +274,7 @@ const AboutUs = ({ avatar }) => {
             <Box component="footer" sx={{ 
                 py: 3, 
                 textAlign: 'center',
-                backgroundColor: '#f5f5f5',
+                backgroundColor: theme.palette.background.default,
                 mt: 'auto'
             }}>
                 <Container>

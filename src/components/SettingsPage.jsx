@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {deleteUserCredentials, saveAvatar, updateUserPassword} from './indexedDBUtils';
-import ThemeToggle from "./ThemeToggle";
+import {deleteUserCredentials, updateUserPassword} from './indexedDBUtils';
 import './style/SettingsPage.css';
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
-import HelpIcon from '@mui/icons-material/Help';
 import LockIcon from '@mui/icons-material/Lock';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
@@ -17,36 +15,11 @@ import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 const SettingsPage = ({ user, setIsLoggedIn}) => {
     const navigate = useNavigate();
-    const userId = user?.email || 'defaultUser';
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    useEffect(() => {
-        const savedTheme = localStorage.getItem(`${userId}_theme`);
-        if (savedTheme) {
-            setTheme(savedTheme);
-            document.body.className = savedTheme === 'dark' ? 'dark-theme' : '';
-        }
-    }, [userId]);
-    const [theme, setTheme] = useState(() => {
-        return localStorage.getItem('theme') || 'light';
-    });
-
-    useEffect(() => {
-        document.body.className = theme === 'dark' ? 'dark-theme' : '';
-        document.body.style.backgroundColor = theme === 'dark' ? 'var(--bg-color)' : '';
-    }, [theme]);
-
-    const handleThemeToggle = useCallback(() => {
-        const newTheme = theme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-        document.body.className = newTheme === 'dark' ? 'dark-theme' : '';
-        document.body.style.backgroundColor = newTheme === 'dark' ? 'var(--bg-color)' : '';
-    }, [theme]);
-
 
     const handleDeleteAccount = useCallback(async () => {
         if (!user || !user.email) {
@@ -56,8 +29,6 @@ const SettingsPage = ({ user, setIsLoggedIn}) => {
 
         try {
             await deleteUserCredentials(user.email);
-            await saveAvatar(user.email, null);
-
             localStorage.removeItem('user');
             localStorage.removeItem('email');
             setIsLoggedIn(false);
@@ -87,10 +58,7 @@ const SettingsPage = ({ user, setIsLoggedIn}) => {
         }
 
         try {
-            console.log('Starting password change...');
             await updateUserPassword(user.email, newPassword);
-            console.log('Password change successful');
-
             alert('Пароль успешно обновлён');
             setNewPassword('');
             setConfirmPassword('');
@@ -131,7 +99,6 @@ const SettingsPage = ({ user, setIsLoggedIn}) => {
                 </div>
 
                 <div className="profile-grid">
-                    {/* Left Sidebar - User Menu */}
                     <div className="profile-sidebar">
                         <h2>User Menu</h2>
                         <ul className="profile-menu-list">
@@ -262,18 +229,6 @@ const SettingsPage = ({ user, setIsLoggedIn}) => {
                                             </div>
                                         </div>
                                     )}
-                                </div>
-                            </div>
-
-                            <div className="settings-section">
-                                <h2>Preferences</h2>
-                                <div className="theme-section">
-                                    <h3>Theme</h3>
-                                    <p>Switch between light and dark themes</p>
-                                    <div className="theme-toggle-container">
-                                        <span>Light Mode</span>
-                                        <ThemeToggle theme={theme} onToggle={handleThemeToggle} />
-                                    </div>
                                 </div>
                             </div>
                         </div>
