@@ -33,6 +33,7 @@ import {
   School as SchoolIcon,
   ContactMail as ContactMailIcon
 } from '@mui/icons-material';
+import Header from "./Header";
 
 /**
  * AboutUs component with improved design using Material UI
@@ -56,59 +57,7 @@ const AboutUs = ({ avatar }) => {
     return (
         <Box sx={{ flexGrow: 1 }}>
             {/* Header with Material UI AppBar */}
-            <AppBar position="static" color="transparent" elevation={1} sx={{ backgroundColor: '#f5f5f5' }}>
-                <Toolbar>
-                    <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-                        <Link to="/">
-                            <img 
-                                src="/84c22203-25aa-4e04-9930-5243dc2d3c2d.png" 
-                                width={isMobile ? "120" : "166"} 
-                                height={isMobile ? "72" : "100"} 
-                                alt="Logo"
-                                style={{ marginRight: '20px' }}
-                            />
-                        </Link>
-                    </Box>
-
-                    {/* Mobile menu button */}
-                    {isMobile && (
-                        <IconButton 
-                            edge="start" 
-                            color="inherit" 
-                            aria-label="menu" 
-                            onClick={toggleMenu}
-                            sx={{ mr: 2 }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    )}
-
-                    {/* Desktop navigation */}
-                    {!isMobile && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                            <NavLink to="/" className="nav-link">Home</NavLink>
-                            <NavLink to="/support" className="nav-link">Support</NavLink>
-                            <NavLink to="/about" className="nav-link">About Us</NavLink>
-                        </Box>
-                    )}
-
-                    {/* Profile avatar */}
-                    <Link to="/profile">
-                        <Avatar 
-                            src={avatarSrc} 
-                            alt="User" 
-                            sx={{ 
-                                width: 48, 
-                                height: 48, 
-                                cursor: 'pointer',
-                                ml: 2,
-                                border: '2px solid white',
-                                boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-                            }} 
-                        />
-                    </Link>
-                </Toolbar>
-            </AppBar>
+            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile}/>
 
             {/* Mobile navigation drawer */}
             <Drawer

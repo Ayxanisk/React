@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.body.className = savedTheme === 'dark' ? 'dark-theme' : '';
+document.body.style.backgroundColor = savedTheme === 'dark' ? '#1a1a1a' : '#ffffff';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

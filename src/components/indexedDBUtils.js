@@ -26,14 +26,14 @@ export const openDB = () => {
         };
     });
 };
-export const saveUserCredentials = async (email, password) => {
+export const saveUserCredentials = async (email, password, name) => {
     try {
         const db = await openDB();
         return new Promise((resolve, reject) => {
             const tx = db.transaction(USER_STORE, 'readwrite');
             const store = tx.objectStore(USER_STORE);
 
-            const request = store.put({ email, password });
+            const request = store.put({ email, password, name });
 
             request.onsuccess = () => resolve(true);
             request.onerror = () => {
@@ -107,14 +107,13 @@ export const getAvatar = async (id) => {
 };
 
 // Удаление пользователя по email
-export const deleteUserCredentials = async (id) => {
+export const deleteUserCredentials = async (email) => {
     try {
         const db = await openDB();
         return new Promise((resolve, reject) => {
             const tx = db.transaction('users', 'readwrite');
             const store = tx.objectStore('users');
-            const request = store.delete(id);
-
+            const request = store.delete(email);
             request.onsuccess = () => resolve(true);
             request.onerror = () => {
                 console.error('❌ Failed to delete user:', request.error);
@@ -127,14 +126,18 @@ export const deleteUserCredentials = async (id) => {
     }
 };
 
-// Обновление пароля пользователя
-export const updateUserPassword = async (id, newPassword) => {
+// Замените параметр id на email
+export const updateUserPassword = async (email, newPassword) => { // ✅
     try {
+        console.log(`Updating password for user: ${email}`);
         const db = await openDB();
+
         return new Promise((resolve, reject) => {
-            const tx = db.transaction('users', 'readwrite');
-            const store = tx.objectStore('users');
-            const getRequest = store.get(id);
+            const tx = db.transaction(USER_STORE, 'readwrite');
+            const store = tx.objectStore(USER_STORE);
+
+            // Ищем по email вместо id
+            const getRequest = store.get(email); // ✅
 
             getRequest.onsuccess = () => {
                 const user = getRequest.result;
@@ -147,13 +150,42 @@ export const updateUserPassword = async (id, newPassword) => {
                 const updateRequest = store.put(user);
 
                 updateRequest.onsuccess = () => resolve(true);
-                updateRequest.onerror = () => reject(updateRequest.error);
+                updateRequest.onerror = (e) => reject(e.target.error);
             };
 
-            getRequest.onerror = () => reject(getRequest.error);
+            getRequest.onerror = (e) => reject(e.target.error);
         });
     } catch (error) {
-        console.error('❌ updateUserPassword error:', error);
+        throw error;
+    }
+};
+// indexedDBUtils.js
+export const updateUserName = async (email, newName) => {
+    try {
+        const db = await openDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(USER_STORE, 'readwrite');
+            const store = tx.objectStore(USER_STORE);
+
+            const getRequest = store.get(email);
+
+            getRequest.onsuccess = () => {
+                const user = getRequest.result;
+                if (!user) {
+                    reject(new Error('User not found'));
+                    return;
+                }
+
+                user.name = newName; // Обновляем имя
+                const updateRequest = store.put(user);
+
+                updateRequest.onsuccess = () => resolve(true);
+                updateRequest.onerror = (e) => reject(e.target.error);
+            };
+
+            getRequest.onerror = (e) => reject(e.target.error);
+        });
+    } catch (error) {
         throw error;
     }
 };

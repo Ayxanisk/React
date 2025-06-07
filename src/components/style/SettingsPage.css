@@ -1,0 +1,337 @@
+/* Settings specific styles */
+.settings-main {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.settings-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.settings-section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Password section */
+.password-section {
+    margin-bottom: 30px;
+}
+
+.password-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 17px;
+    color: #333;
+}
+
+.password-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.password-input {
+    padding: 12px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.password-input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+/* Delete section */
+.delete-section {
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.delete-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 17px;
+    color: #333;
+}
+
+.warning-text {
+    margin: 0 0 10px 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.warning-text.strong {
+    color: #ef4444;
+    font-weight: 500;
+}
+
+.delete-confirmation {
+    background-color: #fef2f2;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.delete-confirmation p {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #b91c1c;
+}
+
+.confirmation-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Theme section */
+.theme-section h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 17px;
+    color: #333;
+}
+
+.theme-section p {
+    margin: 0 0 15px 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.theme-toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f9fafb;
+    border-radius: 6px;
+    padding: 12px 15px;
+}
+
+.error-message {
+    color: #dc2626;
+    margin-top: 10px;
+    font-size: 14px;
+}/* SettingsPage.css */
+
+.profile-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow: auto;
+}
+
+.profile-container {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 1200px;
+    padding: 20px;
+    position: relative;
+}
+
+.settings-container {
+    height: 85vh; /* Фиксированная высота */
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 20px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.profile-sidebar {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    height: 70vh;
+    overflow-y: auto;
+}
+
+.settings-main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+}
+
+.settings-scrollable {
+    overflow-y: auto;
+    padding-right: 10px;
+    height: 100%;
+    flex: 1;
+}
+
+/* Остальные существующие стили остаются без изменений */
+
+.settings-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.password-section, .delete-section, .theme-section {
+    margin-bottom: 25px;
+}
+
+/* Добавляем кастомный скроллбар */
+.settings-scrollable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.settings-scrollable::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.settings-scrollable::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.settings-scrollable::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+    .profile-container {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        padding: 15px;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .profile-sidebar {
+        height: auto;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .settings-main {
+        height: auto;
+    }
+
+    .settings-scrollable {
+        padding-right: 0;
+    }
+
+    .profile-header {
+        padding: 0 0 10px 0;
+    }
+
+    .profile-header h1 {
+        font-size: 20px;
+    }
+
+    .profile-close-button {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+    }
+
+    .settings-section {
+        padding: 15px;
+    }
+
+    .password-inputs {
+        gap: 8px;
+    }
+
+    .confirmation-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .theme-toggle-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .delete-confirmation {
+        padding: 10px;
+    }
+
+    .profile-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* Специальные стили для вертикальной ориентации */
+    @media (orientation: portrait) {
+        .profile-container {
+            padding: 10px;
+        }
+
+        .profile-grid {
+            gap: 10px;
+        }
+
+        .settings-section {
+            margin-bottom: 15px;
+        }
+    }
+}
+
+/* Дополнительная адаптация для очень маленьких экранов */
+@media (max-width: 480px) {
+    .profile-header h1 {
+        font-size: 18px;
+    }
+
+    .profile-sidebar h2 {
+        font-size: 16px;
+    }
+
+    .settings-section h2 {
+        font-size: 18px;
+    }
+
+    .password-section h3,
+    .delete-section h3,
+    .theme-section h3 {
+        font-size: 15px;
+    }
+
+    .warning-text {
+        font-size: 13px;
+    }
+}
