@@ -47,15 +47,3 @@ body.light-theme {
 .MuiTextField-root .MuiInputLabel-root {
   color: #b0b0b0;
 }/* В App.css */
-body.dark-theme .MuiCard-root {
-  background-color: #252525;
-}
-
-body.dark-theme .MuiTextField-root .MuiInputBase-root {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #e0e0e0;
-}
-
-body.dark-theme .MuiTextField-root .MuiInputLabel-root {
-  color: #b0b0b0;
-}

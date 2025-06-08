@@ -453,115 +453,7 @@
     margin-right: 5px;
 }
 
-@media (max-width: 768px) {
-    .profile-container {
-        width: 100%;
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 0;
-        padding: 15px;
-    }
-
-    .profile-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .profile-sidebar {
-        height: auto;
-        padding: 15px;
-        margin-bottom: 15px;
-    }
-
-    .settings-main {
-        height: auto;
-    }
-
-    .settings-scrollable {
-        padding-right: 0;
-    }
-
-    .profile-header {
-        padding: 0 0 10px 0;
-    }
-
-    .profile-header h1 {
-        font-size: 20px;
-    }
-
-    .profile-close-button {
-        width: 36px;
-        height: 36px;
-        font-size: 24px;
-    }
-
-    .settings-section {
-        padding: 15px;
-    }
-
-    .password-inputs {
-        gap: 8px;
-    }
-
-    .confirmation-buttons {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .theme-toggle-container {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .delete-confirmation {
-        padding: 10px;
-    }
-
-    .profile-btn {
-        padding: 8px 12px;
-        font-size: 13px;
-    }
-
-    @media (orientation: portrait) {
-        .profile-container {
-            padding: 10px;
-        }
-
-        .profile-grid {
-            gap: 10px;
-        }
-
-        .settings-section {
-            margin-bottom: 15px;
-        }
-    }
-}
-
-
-@media (max-width: 480px) {
-    .profile-header h1 {
-        font-size: 18px;
-    }
-
-    .profile-sidebar h2 {
-        font-size: 16px;
-    }
-
-    .settings-section h2 {
-        font-size: 18px;
-    }
-
-    .password-section h3,
-    .delete-section h3,
-    .theme-section h3 {
-        font-size: 15px;
-    }
-
-    .warning-text {
-        font-size: 13px;
-    }
-}/* Общие переменные для тем (должны совпадать с SettingsPage.css) */
+/* Общие переменные для тем (должны совпадать с SettingsPage.css) */
 :root {
     /* Светлая тема */
     --bg-color: #f0f2f5;
@@ -787,3 +679,112 @@
     align-items: center;
 }
 
+@media (max-width: 768px) {
+    .profile-container {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        padding: 15px;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .profile-sidebar {
+        height: auto;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .settings-main {
+        height: auto;
+    }
+
+    .settings-scrollable {
+        padding-right: 0;
+    }
+
+    .profile-header {
+        padding: 0 0 10px 0;
+    }
+
+    .profile-header h1 {
+        font-size: 20px;
+    }
+
+    .profile-close-button {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+    }
+
+    .settings-section {
+        padding: 15px;
+    }
+
+    .password-inputs {
+        gap: 8px;
+    }
+
+    .confirmation-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .theme-toggle-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .delete-confirmation {
+        padding: 10px;
+    }
+
+    .profile-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    @media (orientation: portrait) {
+        .profile-container {
+            padding: 10px;
+        }
+
+        .profile-grid {
+            gap: 10px;
+        }
+
+        .settings-section {
+            margin-bottom: 15px;
+        }
+    }
+}
+
+
+@media (max-width: 480px) {
+    .profile-header h1 {
+        font-size: 18px;
+    }
+
+    .profile-sidebar h2 {
+        font-size: 16px;
+    }
+
+    .settings-section h2 {
+        font-size: 18px;
+    }
+
+    .password-section h3,
+    .delete-section h3,
+    .theme-section h3 {
+        font-size: 15px;
+    }
+
+    .warning-text {
+        font-size: 13px;
+    }
+}
