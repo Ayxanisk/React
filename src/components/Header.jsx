@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Link, NavLink, useNavigate} from 'react-router-dom';
 import {
     AppBar,
@@ -12,20 +12,29 @@ import {
     Divider,
     ListItemIcon,
     ListItemText,
-    useTheme // Добавляем хук для доступа к теме
+    useTheme
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode'; // Добавляем иконку светлой темы
+import LightModeIcon from '@mui/icons-material/LightMode';
+import LanguageIcon from '@mui/icons-material/Language';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ThemeToggle from "./ThemeToggle";
+import LanguageSelector from "./LanguageSelector";
+import { useLanguage } from './LanguageContext';
+import translations from '../locales/translations';
 
 const Header = ({ isMobile, toggleMenu, avatar, setIsLoggedIn, themeMode, toggleTheme }) => {
-    const theme = useTheme(); // Получаем текущую тему
+    const { language, changeLanguage } = useLanguage();
+    const t = translations[language] || translations.en;
+    const theme = useTheme();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const languageOpen = Boolean(languageAnchorEl);
     const navigate = useNavigate();
 
     const handleMenuOpen = (event) => {
@@ -36,29 +45,28 @@ const Header = ({ isMobile, toggleMenu, avatar, setIsLoggedIn, themeMode, toggle
         setAnchorEl(null);
     };
 
+    const handleLanguageMenuOpen = (event) => {
+        setLanguageAnchorEl(event.currentTarget);
+    };
+
+    const handleLanguageMenuClose = () => {
+        setLanguageAnchorEl(null);
+    };
+
+    const handleLanguageChange = (lang) => {
+        changeLanguage(lang);
+        handleLanguageMenuClose();
+    };
+
     const handleLogout = useCallback(() => {
         setIsLoggedIn(false);
         localStorage.removeItem('user');
         localStorage.removeItem('email');
         navigate('/');
+        handleMenuClose();
     }, [setIsLoggedIn, navigate]);
 
-    const [currentTheme, setCurrentTheme] = useState(() => {
-        return localStorage.getItem('theme') || 'dark'; // По умолчанию темная тема
-    });
-
-    useEffect(() => {
-        document.body.className = currentTheme === 'dark' ? 'dark-theme' : '';
-        document.body.style.backgroundColor = currentTheme === 'dark' ? '#121212' : '';
-    }, [currentTheme]);
-    useCallback(() => {
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        setCurrentTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-        document.body.className = newTheme === 'dark' ? 'dark-theme' : '';
-        document.body.style.backgroundColor = newTheme === 'dark' ? '#121212' : '';
-    }, [currentTheme]);
-// Стили для темной темы
+    // Стили для темной темы
     const menuPaperStyle = {
         backgroundColor: theme.palette.mode === 'dark' ? '#2d2d2d' : '#ffffff',
         color: theme.palette.mode === 'dark' ? '#e0e0e0' : 'inherit',
@@ -116,23 +124,23 @@ const Header = ({ isMobile, toggleMenu, avatar, setIsLoggedIn, themeMode, toggle
                         <NavLink
                             to="/"
                             className="nav-link"
-                            style={{ color: theme.palette.mode === 'dark' ? '#e0e0e0' : '#333' }}
+                            style={{ color: theme.palette.text.primary }}
                         >
-                            Home
+                            {t.home}
                         </NavLink>
                         <NavLink
                             to="/support"
                             className="nav-link"
-                            style={{ color: theme.palette.mode === 'dark' ? '#e0e0e0' : '#333' }}
+                            style={{ color: theme.palette.text.primary }}
                         >
-                            Support
+                            {t.supportTitle}
                         </NavLink>
                         <NavLink
                             to="/about"
                             className="nav-link"
-                            style={{ color: theme.palette.mode === 'dark' ? '#e0e0e0' : '#333' }}
+                            style={{ color: theme.palette.text.primary }}
                         >
-                            About Us
+                            {t.aboutTitle}
                         </NavLink>
                     </Box>
                 )}
@@ -204,7 +212,9 @@ const Header = ({ isMobile, toggleMenu, avatar, setIsLoggedIn, themeMode, toggle
                                 <AccountCircleIcon fontSize="small" />
                             </ListItemIcon>
                             <ListItemText>
-                                <Typography variant="body1" fontWeight={500}>Profile</Typography>
+                                <Typography variant="body1" fontWeight={500}>
+                                    {t.profile.settings || "Profile"}
+                                </Typography>
                             </ListItemText>
                         </MenuItem>
 
@@ -222,9 +232,76 @@ const Header = ({ isMobile, toggleMenu, avatar, setIsLoggedIn, themeMode, toggle
                                 <SettingsIcon fontSize="small" />
                             </ListItemIcon>
                             <ListItemText>
-                                <Typography variant="body1" fontWeight={500}>Settings</Typography>
+                                <Typography variant="body1" fontWeight={500}>
+                                    {t.profile.settings || "Settings"}
+                                </Typography>
                             </ListItemText>
                         </MenuItem>
+
+                        <MenuItem
+                            onClick={handleLanguageMenuOpen}
+                            sx={{
+                                py: 1.5,
+                                px: 2.5,
+                                ...menuItemStyle
+                            }}
+                        >
+                            <ListItemIcon sx={{ minWidth: 40 }}>
+                                <LanguageIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>
+                                <Typography variant="body1" fontWeight={500}>
+                                    {t.language || "Language"}
+                                </Typography>
+                            </ListItemText>
+                            <ListItemIcon sx={{ minWidth: 40 }}>
+                                <ArrowForwardIosIcon fontSize="small" />
+                            </ListItemIcon>
+                        </MenuItem>
+
+                        <Menu
+                            anchorEl={languageAnchorEl}
+                            open={languageOpen}
+                            onClose={handleLanguageMenuClose}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            PaperProps={{
+                                style: {
+                                    width: '200px',
+                                    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.15)'
+                                }
+                            }}
+                        >
+                            {[
+                                { code: 'az', name: 'Azerbaijan' },
+                                { code: 'ru', name: 'Russia' },
+                                { code: 'en', name: 'English' }
+                            ].map((lang) => (
+                                <MenuItem
+                                    key={lang.code}
+                                    selected={language === lang.code}
+                                    onClick={() => handleLanguageChange(lang.code)}
+                                    sx={{
+                                        py: 1,
+                                        px: 2,
+                                        '&.Mui-selected': {
+                                            backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(25, 118, 210, 0.12)'
+                                            }
+                                        }
+                                    }}
+                                >
+                                    <Typography variant="body1">{lang.name}</Typography>
+                                </MenuItem>
+                            ))}
+                        </Menu>
 
                         <MenuItem
                             sx={{
@@ -273,7 +350,7 @@ const Header = ({ isMobile, toggleMenu, avatar, setIsLoggedIn, themeMode, toggle
                             </ListItemIcon>
                             <ListItemText>
                                 <Typography variant="body1" fontWeight={500} color="error">
-                                    Logout
+                                    {t.logout || "Logout"}
                                 </Typography>
                             </ListItemText>
                         </MenuItem>

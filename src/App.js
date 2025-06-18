@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import {BrowserRouter as Router, Routes, Route, NavLink} from 'react-router-dom';
 import {GoogleOAuthProvider} from '@react-oauth/google';
-import {jwtDecode} from 'jwt-decode';
 import {
     ThemeProvider,
     CssBaseline,
@@ -38,6 +37,9 @@ import {getUserCredentials, saveUserCredentials} from './components/indexedDBUti
 import SettingsPage from './components/SettingsPage';
 import Header from "./components/Header";
 import getTheme from "./theme";
+import {LanguageProvider, useLanguage} from "./components/LanguageContext";
+import translations from './locales/translations';
+import {jwtDecode} from "jwt-decode";
 
 /**
  * Main App component
@@ -51,9 +53,8 @@ const App = () => {
     const [user, setUser] = useState(null);
     const [avatar, setAvatar] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [themeMode, setThemeMode] = useState('light'); // По умолчанию темная тема
+    const [themeMode, setThemeMode] = useState('light');
 
-    // Создаем тему на основе выбранного режима
     const theme = useMemo(() => getTheme(themeMode), [themeMode]);
 
     const toggleTheme = useCallback(() => {
@@ -65,11 +66,10 @@ const App = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
 
-    // Меню
     const toggleMenu = useCallback(() => setMenuOpen(prev => !prev), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-    // Загрузка из localStorage при старте
+    // Load user data from localStorage on startup
     useEffect(() => {
         const savedUser = localStorage.getItem('user');
         const savedEmail = localStorage.getItem('email');
@@ -84,6 +84,7 @@ const App = () => {
             setIsLoggedIn(true);
         }
     }, []);
+
     const updateUserName = (newName) => {
         setUser(prevUser => ({
             ...prevUser,
@@ -94,13 +95,14 @@ const App = () => {
             name: newName
         }));
     };
+
     useEffect(() => {
         if (user?.email) {
             getAvatar(user.email).then(setAvatar);
         }
     }, [user]);
 
-    // Авторизация через email/password
+    // Email/password login
     const handleLogin = useCallback(async (e) => {
         e.preventDefault();
 
@@ -111,16 +113,15 @@ const App = () => {
                 setIsLoggedIn(true);
                 localStorage.setItem('email', email);
             } else {
-                alert('Неверный email или пароль');
+                alert('Incorrect email or password');
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('Ошибка при входе');
+            alert('Login error');
         }
     }, [email, password]);
 
-
-    // Регистрация (аналогично логину пока без API)
+    // Registration
     const handleRegister = useCallback(async (e) => {
         e.preventDefault();
 
@@ -128,18 +129,18 @@ const App = () => {
 
         try {
             if (!email || !password) {
-                alert('Введите email и пароль');
+                alert('Please enter email and password');
                 return;
             }
 
             if (!passwordRegex.test(password)) {
-                alert('Пароль должен содержать минимум 8 символов, включая заглавные, строчные буквы, цифры и спецсимволы');
+                alert('Password must contain at least 8 characters, including uppercase, lowercase letters, numbers and special characters');
                 return;
             }
 
             const existingUser = await getUserCredentials(email);
             if (existingUser) {
-                alert('Пользователь с таким email уже зарегистрирован');
+                alert('User with this email is already registered');
                 return;
             }
 
@@ -150,12 +151,11 @@ const App = () => {
             localStorage.setItem('email', email);
         } catch (error) {
             console.error('Register error:', error);
-            alert('Ошибка при регистрации');
+            alert('Registration error');
         }
     }, [email, password]);
 
-
-    // Авторизация через Google
+    // Google auth
     const handleGoogleSuccess = useCallback((credentialResponse) => {
         try {
             const decoded = jwtDecode(credentialResponse.credential);
@@ -163,343 +163,383 @@ const App = () => {
             setIsLoggedIn(true);
             localStorage.setItem('user', JSON.stringify(decoded));
         } catch (err) {
-            console.error('Google login decode error:', err);
+            console.error('Google login error:', err);
             alert('Failed to log in via Google');
         }
     }, []);
 
+    // HomePage component
+    const HomePage = ({user, email, themeMode, toggleTheme}) => {
+        const { language } = useLanguage();
+        const t = translations[language] || translations.en;
 
-    // Home page component
-    const HomePage = ({ user, email, themeMode, toggleTheme}) => (
-        <Box sx={{flexGrow: 1}}>
-            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile} setIsLoggedIn={setIsLoggedIn} themeMode={themeMode} toggleTheme={toggleTheme}/>
+        return (
+            <Box sx={{flexGrow: 1}}>
+                <Header
+                    avatar={avatar}
+                    toggleMenu={toggleMenu}
+                    isMobile={isMobile}
+                    setIsLoggedIn={setIsLoggedIn}
+                    themeMode={themeMode}
+                    toggleTheme={toggleTheme}
+                />
 
-            <Drawer
-                anchor="left"
-                open={menuOpen}
-                onClose={closeMenu}
-            >
-                <Box sx={{width: 250}} role="presentation" onClick={closeMenu}>
-                    <List>
-                        <ListItem button component={NavLink} to="/">
-                            <ListItemText primary="Home"/>
-                        </ListItem>
-                        <ListItem button component={NavLink} to="/support">
-                            <ListItemText primary="Support"/>
-                        </ListItem>
-                        <ListItem button component={NavLink} to="/about">
-                            <ListItemText primary="About Us"/>
-                        </ListItem>
-                    </List>
-                </Box>
-            </Drawer>
 
-            {/* Hero section */}
-            <Box
-                sx={{
-                    bgcolor: theme.palette.background.paper,
-                    py: { xs: 4, md: 6 },
-                    px: { xs: 2, md: 5 }
-                }}
-            >
-                <Container maxWidth="lg">
-                    <Grid container spacing={4} alignItems="center">
-                        <Grid item xs={12} md={6}>
-                            <Box sx={{animation: 'fadeIn 0.8s ease-out'}}>
-                                <Typography variant="h2" component="h1" gutterBottom sx={{
-                                    fontSize: {xs: '2rem', sm: '2.5rem', md: '3rem'},
-                                    fontWeight: 700,
-                                    mb: 3
-                                }}>
-                                    Welcome {user?.name || email || 'User'}!
-                                </Typography>
-                                <Typography variant="body1" sx={{
-                                    fontSize: {xs: '1rem', md: '1.2rem'},
-                                    color: 'text.secondary',
-                                    mb: 3
-                                }}>
-                                    Connect in real time with the most effective peer-to-peer texting
-                                    tool for higher education
-                                </Typography>
-
-                                <Box
-                                    component="form"
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: {xs: 'column', sm: 'row'},
-                                        gap: 1,
-                                        mb: 4
-                                    }}
-                                >
-                                    <TextField
-                                        variant="outlined"
-                                        placeholder="Type your email"
-                                        type="email"
-                                        size="small"
-                                        fullWidth
+                {/* Hero section */}
+                <Box
+                    sx={{
+                        bgcolor: theme.palette.background.paper,
+                        py: {xs: 4, md: 6},
+                        px: {xs: 2, md: 5}
+                    }}
+                >
+                    <Container maxWidth="lg">
+                        <Grid container spacing={4} alignItems="center">
+                            <Grid item xs={12} md={6}>
+                                <Box sx={{animation: 'fadeIn 0.8s ease-out'}}>
+                                    <Typography
+                                        variant="h2"
+                                        component="h1"
+                                        gutterBottom
                                         sx={{
-                                            maxWidth: {sm: 300},
-                                            bgcolor: 'background.paper'
+                                            fontSize: {xs: '2rem', sm: '2.5rem', md: '3rem'},
+                                            fontWeight: 700,
+                                            mb: 3
                                         }}
-                                    />
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        type="submit"
-                                        endIcon={<SendIcon/>}
                                     >
-                                        Submit
-                                    </Button>
-                                </Box>
+                                        {t.welcome?.replace('{name}', user?.name || email || 'User') || `Welcome ${user?.name || email || 'User'}!`}
+                                    </Typography>
+                                    <Typography
+                                        variant="body1"
+                                        sx={{
+                                            fontSize: {xs: '1rem', md: '1.2rem'},
+                                            color: 'text.secondary',
+                                            mb: 3
+                                        }}
+                                    >
+                                        {t.welcome2 || "Connect in real time with the most effective peer-to-peer texting tool for higher education"}
+                                    </Typography>
 
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: {xs: 'column', sm: 'row'},
-                                        gap: {xs: 2, sm: 3},
-                                        mt: 2
-                                    }}
-                                >
-                                    {[
-                                        '14k+ Total Courses',
-                                        '700+ Expert Mentors',
-                                        '8k+ Students Globally'
-                                    ].map((stat, index) => (
-                                        <Chip
-                                            key={index}
-                                            label={stat}
+                                    <Box
+                                        component="form"
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: {xs: 'column', sm: 'row'},
+                                            gap: 1,
+                                            mb: 4
+                                        }}
+                                    >
+                                        <TextField
+                                            variant="outlined"
+                                            placeholder={t.emailPlaceholder || "Type your email"}
+                                            type="email"
+                                            size="small"
+                                            fullWidth
                                             sx={{
-                                                fontWeight: 600,
-                                                py: 1.5,
-                                                px: 1,
-                                                bgcolor: 'rgba(255, 255, 255, 0.7)',
-                                                border: '1px solid rgba(0, 0, 0, 0.1)'
+                                                maxWidth: {sm: 300},
+                                                bgcolor: 'background.paper'
                                             }}
                                         />
-                                    ))}
-                                </Box>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} md={6} sx={{textAlign: 'center'}}>
-                            <Box
-                                sx={{
-                                    animation: 'fadeIn 0.8s ease-out 0.2s both',
-                                    display: 'flex',
-                                    justifyContent: 'center'
-                                }}
-                            >
-                                <Box
-                                    component="img"
-                                    src="/image-from-rawpixel-id-12137309-png.png"
-                                    alt="Hero"
-                                    sx={{
-                                        maxWidth: '100%',
-                                        height: 'auto',
-                                        maxHeight: {xs: 300, sm: 400, md: 500},
-                                        borderRadius: '50% 50% 0 0',
-                                        bgcolor: '#ffd770',
-                                        p: {xs: 2, md: 3},
-                                        transition: 'transform 0.3s ease',
-                                        '&:hover': {
-                                            transform: 'translateY(-10px)'
-                                        }
-                                    }}
-                                />
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </Container>
-            </Box>
-
-            {/* Brand logos section */}
-            <Box
-                sx={{
-                    bgcolor: theme.palette.background.default,
-                    py: { xs: 3, md: 4 },
-                    px: 2
-                }}
-            >
-                <Container maxWidth="lg">
-                    <Grid
-                        container
-                        spacing={2}
-                        justifyContent="space-around"
-                        alignItems="center"
-                    >
-                        {['Sprint', 'Google', 'Gillette', 'Forbes', 'Etsy'].map((brand, index) => (
-                            <Grid
-                                item
-                                key={index}
-                                xs={6}
-                                sm={4}
-                                md={2}
-                                sx={{
-                                    textAlign: 'center',
-                                    typography: 'h6',
-                                    color: '#888',
-                                    fontWeight: brand === 'Gillette' ? 700 : 500
-                                }}
-                            >
-                                {brand}
-                            </Grid>
-                        ))}
-                    </Grid>
-                </Container>
-            </Box>
-
-            {/* Education section */}
-            <Box
-                sx={{
-                    py: { xs: 5, md: 8 },
-                    px: 2,
-                    bgcolor: theme.palette.background.default,
-                }}
-            >
-                <Container maxWidth="lg">
-                    <Typography
-                        variant="h3"
-                        component="h2"
-                        align="center"
-                        gutterBottom
-                        sx={{
-                            mb: {xs: 4, md: 6},
-                            fontWeight: 600,
-                            fontSize: {xs: '1.8rem', sm: '2.2rem', md: '2.5rem'}
-                        }}
-                    >
-                        Empowering Modern Day Education
-                    </Typography>
-
-                    <Grid container spacing={4} justifyContent="center">
-                        {[
-                            {
-                                title: 'Teachers',
-                                icon: <PeopleIcon fontSize="large"/>,
-                                description: 'Bring the power of the digital age into your classroom. Enable your students to make innovative school projects.',
-                                bgcolor: theme.palette.mode === 'light' ? '#ECEBFF' : '#4A4458'
-                            },
-                            {
-                                title: 'Students',
-                                icon: <SchoolIcon fontSize="large"/>,
-                                description: 'Get bold and creative with your school assignments. Flipstack allows you to unleash your imagination in the easiest possible way.',
-                                bgcolor: theme.palette.mode === 'light' ? '#FFF5CF' : '#4A3C39'
-                             },
-                            {
-                                title: 'Schools',
-                                icon: <BusinessIcon fontSize="large"/>,
-                                description: 'Publish appealing school prospectus, handbooks and admission guides to inform students, teachers, applicants and parents.',
-                                bgcolor: theme.palette.mode === 'light' ? '#FFE4E1' : '#4A3636'
-                            }
-                        ].map((card, index) => (
-                            <Grid item xs={12} sm={6} md={4} key={index}>
-                                <Card
-                                    elevation={3}
-                                    sx={{
-                                        height: '100%',
-                                        bgcolor: card.bgcolor,
-                                        borderRadius: 3,
-                                        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                                        '&:hover': {
-                                            transform: 'translateY(-10px)',
-                                            boxShadow: '0 12px 20px rgba(0,0,0,0.1)'
-                                        }
-                                    }}
-                                >
-                                    <CardContent sx={{p: 3}}>
-                                        <Box sx={{display: 'flex', alignItems: 'center', mb: 2, gap: 1}}>
-                                            <Avatar sx={{
-                                                bgcolor: 'primary.main',
-                                                color: theme.palette.getContrastText(theme.palette.primary.main)
-                                            }}>
-                                                {card.icon}
-                                            </Avatar>
-                                            <Typography variant="h5" component="h3" fontWeight={600}>
-                                                {card.title}
-                                            </Typography>
-                                        </Box>
-                                        <Typography variant="body1" sx={{mb: 2}}>
-                                            {card.description}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions sx={{px: 3, pb: 3}}>
                                         <Button
                                             variant="contained"
                                             color="primary"
-                                            sx={{borderRadius: 2}}
+                                            type="submit"
+                                            endIcon={<SendIcon/>}
                                         >
-                                            See more
+                                            {t.submit || "Submit"}
                                         </Button>
-                                    </CardActions>
-                                </Card>
+                                    </Box>
+
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: {xs: 'column', sm: 'row'},
+                                            gap: {xs: 2, sm: 3},
+                                            mt: 2
+                                        }}
+                                    >
+                                        {[
+                                            t.stats?.courses || "14k+ Total Courses",
+                                            t.stats?.mentors || "700+ Expert Mentors",
+                                            t.stats?.students || "8k+ Students Globally"
+                                        ].map((stat, index) => (
+                                            <Chip
+                                                key={index}
+                                                label={stat}
+                                                sx={{
+                                                    fontWeight: 600,
+                                                    py: 1.5,
+                                                    px: 1,
+                                                    bgcolor: 'rgba(255, 255, 255, 0.7)',
+                                                    border: '1px solid rgba(0, 0, 0, 0.1)'
+                                                }}
+                                            />
+                                        ))}
+                                    </Box>
+                                </Box>
                             </Grid>
-                        ))}
-                    </Grid>
-                </Container>
-            </Box>
+                            <Grid item xs={12} md={6} sx={{textAlign: 'center'}}>
+                                <Box
+                                    sx={{
+                                        animation: 'fadeIn 0.8s ease-out 0.2s both',
+                                        display: 'flex',
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <Box
+                                        component="img"
+                                        src="/image-from-rawpixel-id-12137309-png.png"
+                                        alt="Education platform"
+                                        sx={{
+                                            maxWidth: '100%',
+                                            height: 'auto',
+                                            maxHeight: {xs: 300, sm: 400, md: 500},
+                                            borderRadius: '50% 50% 0 0',
+                                            bgcolor: '#ffd770',
+                                            p: {xs: 2, md: 3},
+                                            transition: 'transform 0.3s ease',
+                                            '&:hover': {
+                                                transform: 'translateY(-10px)'
+                                            }
+                                        }}
+                                    />
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </Container>
+                </Box>
 
-            {/* Footer */}
-            <Box component="footer" sx={{
-                py: 3,
-                textAlign: 'center',
-                backgroundColor: theme.palette.background.default,
-                color: theme.palette.text.primary,
-            }}>
-                <Container>
-                    <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
-                        &copy; 2025 Education Inc. All rights reserved.
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        Contact us: support@education.com
-                    </Typography>
-                </Container>
-            </Box>
-        </Box>
-    );
+                {/* Brand logos */}
+                <Box
+                    sx={{
+                        bgcolor: theme.palette.background.default,
+                        py: {xs: 3, md: 4},
+                        px: 2
+                    }}
+                >
+                    <Container maxWidth="lg">
+                        <Grid
+                            container
+                            spacing={2}
+                            justifyContent="space-around"
+                            alignItems="center"
+                        >
+                            {['Sprint', 'Google', 'Forbes', 'Gillette', 'Etsy'].map((brand, index) => (
+                                <Grid
+                                    item
+                                    key={index}
+                                    xs={6}
+                                    sm={4}
+                                    md={2}
+                                    sx={{
+                                        textAlign: 'center',
+                                        typography: 'h6',
+                                        color: '#888',
+                                        fontWeight: brand === 'Gillette' ? 700 : 500
+                                    }}
+                                >
+                                    {brand}
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Container>
+                </Box>
 
+                {/* Education section */}
+                <Box
+                    sx={{
+                        py: {xs: 5, md: 8},
+                        px: 2,
+                        bgcolor: theme.palette.background.default,
+                    }}
+                >
+                    <Container maxWidth="lg">
+                        <Typography
+                            variant="h3"
+                            component="h2"
+                            align="center"
+                            gutterBottom
+                            sx={{
+                                mb: {xs: 4, md: 6},
+                                fontWeight: 600,
+                                fontSize: {xs: '1.8rem', sm: '2.2rem', md: '2.5rem'}
+                            }}
+                        >
+                            {t.educationTitle || "Empowering Modern Day Education"}
+                        </Typography>
+
+                        <Grid container spacing={4} justifyContent="center">
+                            {[
+                                {
+                                    title: t.cards?.teachers || "Teachers",
+                                    icon: <PeopleIcon fontSize="large"/>,
+                                    description: t.cards?.teachersDesc || "Bring the power of the digital age into your classroom. Enable your students to make innovative school projects.",
+                                    bgcolor: theme.palette.mode === 'light' ? '#ECEBFF' : '#4A4458'
+                                },
+                                {
+                                    title: t.cards?.students || "Students",
+                                    icon: <SchoolIcon fontSize="large"/>,
+                                    description: t.cards?.studentsDesc || "Get bold and creative with your school assignments. Flipstack allows you to unleash your imagination in the easiest possible way.",
+                                    bgcolor: theme.palette.mode === 'light' ? '#FFF5CF' : '#4A3C39'
+                                },
+                                {
+                                    title: t.cards?.schools || "Schools",
+                                    icon: <BusinessIcon fontSize="large"/>,
+                                    description: t.cards?.schoolsDesc || "Publish appealing school prospectus, handbooks and admission guides to inform students, teachers, applicants and parents.",
+                                    bgcolor: theme.palette.mode === 'light' ? '#FFE4E1' : '#4A3636'
+                                }
+                            ].map((card, index) => (
+                                <Grid item xs={12} sm={6} md={4} key={index}>
+                                    <Card
+                                        elevation={3}
+                                        sx={{
+                                            height: '100%',
+                                            bgcolor: card.bgcolor,
+                                            borderRadius: 3,
+                                            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                                            '&:hover': {
+                                                transform: 'translateY(-10px)',
+                                                boxShadow: '0 12px 20px rgba(0,0,0,0.1)'
+                                            }
+                                        }}
+                                    >
+                                        <CardContent sx={{p: 3}}>
+                                            <Box sx={{display: 'flex', alignItems: 'center', mb: 2, gap: 1}}>
+                                                <Avatar sx={{
+                                                    bgcolor: 'primary.main',
+                                                    color: theme.palette.getContrastText(theme.palette.primary.main)
+                                                }}>
+                                                    {card.icon}
+                                                </Avatar>
+                                                <Typography variant="h5" component="h3" fontWeight={600}>
+                                                    {card.title}
+                                                </Typography>
+                                            </Box>
+                                            <Typography variant="body1" sx={{mb: 2}}>
+                                                {card.description}
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions sx={{px: 3, pb: 3}}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                sx={{borderRadius: 2}}
+                                            >
+                                                {t.seeMore || "See more"}
+                                            </Button>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Container>
+                </Box>
+
+                {/* Footer */}
+                <Box component="footer" sx={{
+                    py: 3,
+                    textAlign: 'center',
+                    backgroundColor: theme.palette.background.default,
+                    color: theme.palette.text.primary,
+                }}>
+                    <Container>
+                        <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
+                            &copy; 2025 Education Inc. All rights reserved.
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Contact us: support@education.com
+                        </Typography>
+                    </Container>
+                </Box>
+            </Box>
+        );
+    };
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            <GoogleOAuthProvider clientId="205196465877-0neriok38upulqssmrufdpnj5cb60486.apps.googleusercontent.com">
-                <Router>
-                    <Routes>
-                        <Route
-                            path="/"
-                            element={isLoggedIn ? <HomePage themeMode={themeMode} toggleTheme={toggleTheme}/> : <LoginPage
-                                isRegistering={isRegistering}
-                                setIsRegistering={setIsRegistering}
-                                email={email}
-                                setEmail={setEmail}
-                                password={password}
-                                setPassword={setPassword}
-                                handleLogin={handleLogin}
-                                handleRegister={handleRegister}
-                                handleGoogleSuccess={handleGoogleSuccess}
-                                isSmall={isSmall}
-                                themeMode={themeMode}
-                                toggleTheme={toggleTheme}
-                            />}
-                        />
-                        <Route path="/support" element={<Support avatar={avatar} themeMode={themeMode} toggleTheme={toggleTheme}/>}/>
-                        <Route path="/about" element={<AboutUs avatar={avatar} themeMode={themeMode} toggleTheme={toggleTheme}/>}/>
-                        <Route
-                            path="/profile"
-                            element={<Profile
-                                user={user}
-                                setIsLoggedIn={setIsLoggedIn}
-                                avatar={avatar}
-                                setAvatar={setAvatar}
-                                updateUserName={updateUserName}
-                                themeMode={themeMode}
-                                toggleTheme={toggleTheme}/>}
-                        />
-                        <Route path="/settings" element={<SettingsPage user={user} setIsLoggedIn={setIsLoggedIn} themeMode={themeMode} toggleTheme={toggleTheme}/>}/>
-                </Routes>
-            </Router>
-        </GoogleOAuthProvider>
-</ThemeProvider>
-)
-    ;
+        <LanguageProvider>
+            <ThemeProvider theme={theme}>
+                <CssBaseline/>
+                <GoogleOAuthProvider
+                    clientId="205196465877-0neriok38upulqssmrufdpnj5cb60486.apps.googleusercontent.com">
+                    <Router>
+                        <Routes>
+                            <Route
+                                path="/"
+                                element={
+                                    isLoggedIn ?
+                                        <HomePage
+                                            user={user}
+                                            email={email}
+                                            themeMode={themeMode}
+                                            toggleTheme={toggleTheme}
+                                        /> :
+                                        <LoginPage
+                                            isRegistering={isRegistering}
+                                            setIsRegistering={setIsRegistering}
+                                            email={email}
+                                            setEmail={setEmail}
+                                            password={password}
+                                            setPassword={setPassword}
+                                            handleLogin={handleLogin}
+                                            handleRegister={handleRegister}
+                                            handleGoogleSuccess={handleGoogleSuccess}
+                                            isSmall={isSmall}
+                                            themeMode={themeMode}
+                                            toggleTheme={toggleTheme}
+                                        />
+                                }
+                            />
+                            <Route
+                                path="/support"
+                                element={
+                                    <Support
+                                        avatar={avatar}
+                                        themeMode={themeMode}
+                                        toggleTheme={toggleTheme}
+                                    />
+                                }
+                            />
+                            <Route
+                                path="/about"
+                                element={
+                                    <AboutUs
+                                        avatar={avatar}
+                                        themeMode={themeMode}
+                                        toggleTheme={toggleTheme}
+                                    />
+                                }
+                            />
+                            <Route
+                                path="/profile"
+                                element={
+                                    <Profile
+                                        user={user}
+                                        setIsLoggedIn={setIsLoggedIn}
+                                        avatar={avatar}
+                                        setAvatar={setAvatar}
+                                        updateUserName={updateUserName}
+                                        themeMode={themeMode}
+                                        toggleTheme={toggleTheme}
+                                    />
+                                }
+                            />
+                            <Route
+                                path="/settings"
+                                element={
+                                    <SettingsPage
+                                        user={user}
+                                        setIsLoggedIn={setIsLoggedIn}
+                                        themeMode={themeMode}
+                                        toggleTheme={toggleTheme}
+                                    />
+                                }
+                            />
+                        </Routes>
+                    </Router>
+                </GoogleOAuthProvider>
+            </ThemeProvider>
+        </LanguageProvider>
+    );
 };
 
 export default App;

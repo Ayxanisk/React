@@ -1,9 +1,6 @@
-import React, {useState, useCallback, useMemo} from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, {useState, useCallback} from 'react';
+import { NavLink } from 'react-router-dom';
 import {
-    AppBar,
-    Toolbar,
-    Typography,
     Container,
     Grid,
     TextField,
@@ -12,7 +9,6 @@ import {
     CardContent,
     Box,
     Avatar,
-    IconButton,
     Drawer,
     List,
     ListItem,
@@ -21,32 +17,38 @@ import {
     AccordionSummary,
     AccordionDetails,
     Paper,
-    useMediaQuery,
-    useTheme,
     Snackbar,
-    Alert
+    Alert,
+    useMediaQuery,
+    useTheme, Typography
 } from '@mui/material';
 import {
-    Menu as MenuIcon,
     ExpandMore as ExpandMoreIcon,
     Send as SendIcon,
     QuestionAnswer as QuestionIcon,
     ContactSupport as ContactSupportIcon
 } from '@mui/icons-material';
-
 import './style/Support.css';
 import './style/App.css';
 import Header from "./Header";
-import getTheme from "../theme";
+import { useLanguage } from './LanguageContext';
+import translations from '../locales/translations';
 
-const Support = ({ avatar, themeMode,toggleTheme }) => {
+// Остальной код без изменений...
 
+const Support = ({ avatar, themeMode, toggleTheme }) => {
+    const { language } = useLanguage();
+    const t = translations[language]?.support || translations.en.support;
     const theme = useTheme();
     const [menuOpen, setMenuOpen] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     // Form state
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        message: ''
+    });
     const [formSent, setFormSent] = useState(false);
 
     const toggleMenu = useCallback(() => setMenuOpen(!menuOpen), [menuOpen]);
@@ -63,44 +65,58 @@ const Support = ({ avatar, themeMode,toggleTheme }) => {
             setFormData({ name: '', email: '', message: '' });
             setFormSent(true);
         } else {
-            alert("Please fill in all fields.");
+            alert(t.fillFields || "Please fill in all fields.");
         }
     };
 
     return (
         <Box sx={{ flexGrow: 1 }}>
             {/* AppBar */}
-            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile} themeMode={themeMode} toggleTheme={toggleTheme} />
+            <Header
+                avatar={avatar}
+                toggleMenu={toggleMenu}
+                isMobile={isMobile}
+                themeMode={themeMode}
+                toggleTheme={toggleTheme}
+            />
 
             {/* Drawer for mobile */}
             <Drawer anchor="left" open={menuOpen} onClose={closeMenu}>
                 <Box sx={{ width: 250 }} onClick={closeMenu}>
                     <List>
-                        {['/', '/support', '/about'].map((path, index) => (
-                            <ListItem button component={NavLink} to={path} key={index}>
-                                <ListItemText primary={path === '/' ? 'Home' : path.slice(1).replace(/^\w/, c => c.toUpperCase())} />
-                            </ListItem>
-                        ))}
+                        <ListItem button component={NavLink} to="/">
+                            <ListItemText primary={translations[language]?.home || "Home"} />
+                        </ListItem>
+                        <ListItem button component={NavLink} to="/support">
+                            <ListItemText primary={translations[language]?.supportTitle || "Support"} />
+                        </ListItem>
+                        <ListItem button component={NavLink} to="/about">
+                            <ListItemText primary={translations[language]?.about || "About Us"} />
+                        </ListItem>
                     </List>
                 </Box>
             </Drawer>
 
             {/* Hero Section */}
-            <Paper sx={{ backgroundColor: theme.palette.background.default, py: { xs: 4, md: 8 }, px: { xs: 2, md: 5 } }}>
+            <Paper sx={{
+                backgroundColor: theme.palette.background.default,
+                py: { xs: 4, md: 8 },
+                px: { xs: 2, md: 5 }
+            }}>
                 <Container maxWidth="lg">
                     <Grid container spacing={4} alignItems="center">
                         <Grid item xs={12} md={7}>
                             <Typography variant="h2" component="h1" sx={{ fontWeight: 700, mb: 3 }}>
-                                Need Help? We're Here for You
+                                {t.title}
                             </Typography>
                             <Typography variant="body1" color="text.secondary">
-                                Our team is ready to assist with any technical issues or account questions.
+                                {t.description}
                             </Typography>
                         </Grid>
                         <Grid item xs={12} md={5} textAlign="center">
                             <img
                                 src="https://cdn-icons-png.flaticon.com/512/2957/2957019.png"
-                                alt=""
+                                alt="Support"
                                 style={{ maxHeight: '80%', width: '80%' }}
                             />
                         </Grid>
@@ -111,17 +127,25 @@ const Support = ({ avatar, themeMode,toggleTheme }) => {
             {/* Contact Form */}
             <Container maxWidth="md" sx={{ py: { xs: 5, md: 8 } }}>
                 <Box textAlign="center" mb={5}>
-                    <ContactSupportIcon sx={{ fontSize: 40, color: theme.palette.text.primary, mb: 2 }} />
+                    <ContactSupportIcon sx={{
+                        fontSize: 40,
+                        color: theme.palette.text.primary,
+                        mb: 2
+                    }} />
                     <Typography variant="h3" fontWeight={600}>
-                        Contact Support
+                        {t.contact}
                     </Typography>
                 </Box>
 
                 <Card elevation={3} sx={{ maxWidth: 600, mx: 'auto', borderRadius: 2 }}>
                     <CardContent>
-                        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                        <Box
+                            component="form"
+                            onSubmit={handleSubmit}
+                            sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+                        >
                             <TextField
-                                label="Your Name"
+                                label={t.yourName}
                                 variant="outlined"
                                 fullWidth
                                 required
@@ -129,7 +153,7 @@ const Support = ({ avatar, themeMode,toggleTheme }) => {
                                 onChange={handleChange('name')}
                             />
                             <TextField
-                                label="Your Email"
+                                label={t.yourEmail}
                                 type="email"
                                 variant="outlined"
                                 fullWidth
@@ -138,7 +162,7 @@ const Support = ({ avatar, themeMode,toggleTheme }) => {
                                 onChange={handleChange('email')}
                             />
                             <TextField
-                                label="Describe your issue"
+                                label={t.describeIssue}
                                 multiline
                                 rows={4}
                                 variant="outlined"
@@ -154,7 +178,7 @@ const Support = ({ avatar, themeMode,toggleTheme }) => {
                                 endIcon={<SendIcon />}
                                 sx={{ alignSelf: { xs: 'stretch', sm: 'flex-end' }, fontWeight: 600 }}
                             >
-                                Send Message
+                                {t.send}
                             </Button>
                         </Box>
                     </CardContent>
@@ -162,33 +186,29 @@ const Support = ({ avatar, themeMode,toggleTheme }) => {
             </Container>
 
             {/* FAQ Section */}
-            <Paper sx={{ backgroundColor: theme.palette.background.default, py: { xs: 5, md: 8 } }}>
+            <Paper sx={{
+                backgroundColor: theme.palette.background.default,
+                py: { xs: 5, md: 8 }
+            }}>
                 <Container maxWidth="md">
                     <Box textAlign="center" mb={5}>
-                        <QuestionIcon sx={{ fontSize: 40, color: theme.palette.text.primary, mb: 2 }} />
-                        <Typography variant="h3" fontWeight={600}>Frequently Asked Questions</Typography>
+                        <QuestionIcon sx={{
+                            fontSize: 40,
+                            color: theme.palette.text.primary,
+                            mb: 2
+                        }} />
+                        <Typography variant="h3" fontWeight={600}>
+                            {t.faqTitle}
+                        </Typography>
                     </Box>
 
-                    {[
-                        {
-                            question: 'How do I reset my password?',
-                            answer: `Click "Forgot password" on the login page. You'll receive a reset link by email.`
-                        },
-                        {
-                            question: 'How can I change my email address?',
-                            answer: `Visit your account settings, click "Change email", and follow the verification steps.`
-                        },
-                        {
-                            question: 'How do I contact the support team?',
-                            answer: `Use the contact form above or email us directly from the help center.`
-                        }
-                    ].map((item, index) => (
+                    {t.faq.map((item, index) => (
                         <Accordion key={index} sx={{ mb: 2 }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography variant="h6">{item.question}</Typography>
+                                <Typography variant="h6">{item.q}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <Typography>{item.answer}</Typography>
+                                <Typography>{item.a}</Typography>
                             </AccordionDetails>
                         </Accordion>
                     ))}
@@ -202,8 +222,12 @@ const Support = ({ avatar, themeMode,toggleTheme }) => {
                 onClose={() => setFormSent(false)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
-                <Alert severity="success" onClose={() => setFormSent(false)} sx={{ width: '100%' }}>
-                    Message sent successfully!
+                <Alert
+                    severity="success"
+                    onClose={() => setFormSent(false)}
+                    sx={{ width: '100%' }}
+                >
+                    {t.success}
                 </Alert>
             </Snackbar>
 

@@ -1,59 +1,56 @@
-import React, {useState, useCallback} from 'react';
+import React, { useState, useCallback } from 'react'; // Исправленный импорт
 import { NavLink } from 'react-router-dom';
-import './style/AboutUs.css';
-import './style/App.css';
-
-// Material UI imports
-import { 
-  Typography,
-  Container, 
-  Grid, 
-  Box, 
-  Avatar, 
-  Drawer,
-  List, 
-  ListItem, 
-  ListItemText, 
-  Paper,
-  Card,
-  CardContent,
-  Button,
-  useMediaQuery,
-  useTheme,
-  Divider
+import {
+    Typography,
+    Container,
+    Grid,
+    Box,
+    Avatar,
+    Drawer,
+    List,
+    ListItem,
+    ListItemText,
+    Paper,
+    Card,
+    CardContent,
+    Button,
+    useMediaQuery,
+    useTheme,
+    Divider
 } from '@mui/material';
-import { 
-  Instagram as InstagramIcon,
-  Telegram as TelegramIcon,
-  WhatsApp as WhatsAppIcon,
-  School as SchoolIcon,
-  ContactMail as ContactMailIcon
+import {
+    Instagram as InstagramIcon,
+    Telegram as TelegramIcon,
+    WhatsApp as WhatsAppIcon,
+    School as SchoolIcon,
+    ContactMail as ContactMailIcon
 } from '@mui/icons-material';
 import Header from "./Header";
+import { useLanguage } from './LanguageContext';
+import translations from '../locales/translations'; // Исправленный путь
 
-/**
- * AboutUs component with improved design using Material UI
- * @param {Object} props - Component props
- * @param {string} props.avatar - User avatar URL
- * @returns {JSX.Element} The AboutUs component
- */
-const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
+// Остальной код без изменений...
+
+const AboutUs = ({ avatar, themeMode, toggleTheme }) => {
+    const { language } = useLanguage();
+    const t = translations[language]?.about || translations.en.about;
     const theme = useTheme();
     const [menuOpen, setMenuOpen] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    // Toggle mobile menu
-    const toggleMenu = useCallback(() => setMenuOpen(!menuOpen), [menuOpen]);
-
-    // Close mobile menu
+    const toggleMenu = useCallback(() => setMenuOpen(prev => !prev), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            {/* Header with Material UI AppBar */}
-            <Header avatar={avatar} toggleMenu={toggleMenu} isMobile={isMobile} themeMode={themeMode} toggleTheme={toggleTheme} />
+            <Header
+                avatar={avatar}
+                toggleMenu={toggleMenu}
+                isMobile={isMobile}
+                themeMode={themeMode}
+                toggleTheme={toggleTheme}
+            />
 
-            {/* Mobile navigation drawer */}
             <Drawer
                 anchor="left"
                 open={menuOpen}
@@ -62,24 +59,24 @@ const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
                 <Box sx={{ width: 250 }} role="presentation" onClick={closeMenu}>
                     <List>
                         <ListItem button component={NavLink} to="/">
-                            <ListItemText primary="Home" />
+                            <ListItemText primary={translations[language]?.home || "Home"} />
                         </ListItem>
                         <ListItem button component={NavLink} to="/support">
-                            <ListItemText primary="Support" />
+                            <ListItemText primary={translations[language]?.supportTitle || "Support"} />
                         </ListItem>
                         <ListItem button component={NavLink} to="/about">
-                            <ListItemText primary="About Us" />
+                            <ListItemText primary={translations[language]?.aboutTitle || "About Us"} />
                         </ListItem>
                     </List>
                 </Box>
             </Drawer>
 
             {/* About intro section */}
-            <Paper 
-                elevation={0} 
-                sx={{ 
+            <Paper
+                elevation={0}
+                sx={{
                     backgroundColor: theme.palette.background.default,
-                    py: { xs: 4, md: 8 }, 
+                    py: { xs: 4, md: 8 },
                     px: { xs: 2, md: 5 },
                     borderRadius: 0
                 }}
@@ -88,34 +85,32 @@ const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
                     <Grid container spacing={4} alignItems="center">
                         <Grid item xs={12} md={7}>
                             <Box sx={{ animation: 'fadeIn 0.8s ease-out' }}>
-                                <Typography variant="h2" component="h1" gutterBottom sx={{ 
+                                <Typography variant="h2" component="h1" gutterBottom sx={{
                                     fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
                                     fontWeight: 700,
                                     mb: 3
                                 }}>
-                                    About Our Platform
+                                    {t.title}
                                 </Typography>
-                                <Typography variant="body1" sx={{ 
+                                <Typography variant="body1" sx={{
                                     fontSize: { xs: '1rem', md: '1.2rem' },
                                     color: theme.palette.text.primary,
                                     maxWidth: '600px'
                                 }}>
-                                    We are committed to providing high-quality educational content and support to
-                                    learners around the world. Our mission is to make education accessible,
-                                    engaging, and effective for everyone.
+                                    {t.description}
                                 </Typography>
                             </Box>
                         </Grid>
                         <Grid item xs={12} md={5} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
-                            <Box sx={{ 
+                            <Box sx={{
                                 animation: 'fadeIn 0.8s ease-out 0.2s both',
                                 display: 'flex',
                                 justifyContent: { xs: 'center', md: 'flex-end' }
                             }}>
-                                <Avatar 
+                                <Avatar
                                     src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                                    alt="About"
-                                    sx={{ 
+                                    alt={t.imageAlt || "About our platform"}
+                                    sx={{
                                         width: { xs: 200, sm: 250, md: 320 },
                                         height: { xs: 200, sm: 250, md: 320 },
                                         boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
@@ -134,40 +129,25 @@ const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
             {/* Contact section */}
             <Container maxWidth="md" sx={{ py: { xs: 5, md: 8 } }}>
                 <Box textAlign="center" mb={5}>
-                    <ContactMailIcon sx={{ fontSize: 40, color: theme.palette.text.primary, mb: 2 }} />
-                    <Typography variant="h3" component="h2" gutterBottom sx={{ 
+                    <ContactMailIcon sx={{
+                        fontSize: 40,
+                        color: theme.palette.text.primary,
+                        mb: 2
+                    }} />
+                    <Typography variant="h3" component="h2" gutterBottom sx={{
                         fontSize: { xs: '1.8rem', md: '2.2rem' },
                         fontWeight: 600
                     }}>
-                        Contact Us
+                        {t.contactTitle}
                     </Typography>
                 </Box>
 
                 <Grid container spacing={3} justifyContent="center">
-                    {[
-                        { 
-                            icon: <InstagramIcon fontSize="large" />, 
-                            text: '@education_platform', 
-                            link: 'https://instagram.com',
-                            color: theme.palette.text.primary
-                        },
-                        { 
-                            icon: <TelegramIcon fontSize="large" />, 
-                            text: 't.me/education_platform', 
-                            link: 'https://t.me/education_platform',
-                            color: theme.palette.text.primary
-                        },
-                        { 
-                            icon: <WhatsAppIcon fontSize="large" />, 
-                            text: '+1 (234) 567-890', 
-                            link: 'https://wa.me/1234567890',
-                            color: theme.palette.text.primary
-                        }
-                    ].map((item, index) => (
+                    {t.contactMethods.map((method, index) => (
                         <Grid item xs={12} sm={6} md={4} key={index}>
-                            <Card 
-                                elevation={3} 
-                                sx={{ 
+                            <Card
+                                elevation={3}
+                                sx={{
                                     height: '100%',
                                     transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                                     '&:hover': {
@@ -176,34 +156,36 @@ const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
                                     }
                                 }}
                             >
-                                <CardContent sx={{ 
-                                    display: 'flex', 
-                                    flexDirection: 'column', 
+                                <CardContent sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
                                     alignItems: 'center',
                                     gap: 2,
                                     p: 3
                                 }}>
-                                    <Avatar 
-                                        sx={{ 
-                                            bgcolor: item.color, 
-                                            width: 60, 
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: method.color || theme.palette.primary.main,
+                                            width: 60,
                                             height: 60,
                                             mb: 1
                                         }}
                                     >
-                                        {item.icon}
+                                        {method.icon === 'instagram' && <InstagramIcon />}
+                                        {method.icon === 'telegram' && <TelegramIcon />}
+                                        {method.icon === 'whatsapp' && <WhatsAppIcon />}
                                     </Avatar>
                                     <Typography variant="h6" component="div">
-                                        {item.text}
+                                        {method.text}
                                     </Typography>
-                                    <Button 
-                                        variant="outlined" 
-                                        href={item.link} 
-                                        target="_blank" 
+                                    <Button
+                                        variant="outlined"
+                                        href={method.link}
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         sx={{ mt: 'auto' }}
                                     >
-                                        Connect
+                                        {t.connectButton}
                                     </Button>
                                 </CardContent>
                             </Card>
@@ -213,39 +195,45 @@ const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
             </Container>
 
             {/* Mission section */}
-            <Paper elevation={0} sx={{ backgroundColor: theme.palette.background.default, py: { xs: 5, md: 8 }, px: { xs: 2, md: 0 } }}>
+            <Paper elevation={0} sx={{
+                backgroundColor: theme.palette.background.default,
+                py: { xs: 5, md: 8 },
+                px: { xs: 2, md: 0 }
+            }}>
                 <Container maxWidth="md">
                     <Box textAlign="center" mb={5}>
-                        <SchoolIcon sx={{ fontSize: 40, color: theme.palette.text.primary, mb: 2 }} />
-                        <Typography variant="h3" component="h2" gutterBottom sx={{ 
+                        <SchoolIcon sx={{
+                            fontSize: 40,
+                            color: theme.palette.text.primary,
+                            mb: 2
+                        }} />
+                        <Typography variant="h3" component="h2" gutterBottom sx={{
                             fontSize: { xs: '1.8rem', md: '2.2rem' },
                             fontWeight: 600
                         }}>
-                            Our Mission
+                            {t.missionTitle}
                         </Typography>
                     </Box>
 
-                    <Typography variant="body1" sx={{ 
+                    <Typography variant="body1" sx={{
                         fontSize: { xs: '1rem', md: '1.1rem' },
                         textAlign: 'center',
                         maxWidth: '800px',
                         mx: 'auto',
                         mb: 4
                     }}>
-                        Our platform is built on the belief that quality education should be accessible to everyone. 
-                        We strive to create an environment where students can learn at their own pace, 
-                        connect with expert mentors, and develop the skills they need to succeed.
+                        {t.missionDescription}
                     </Typography>
 
                     <Grid container spacing={4} justifyContent="center">
-                        {['Innovation', 'Accessibility', 'Quality'].map((value, index) => (
+                        {t.values.map((value, index) => (
                             <Grid item xs={12} sm={4} key={index}>
-                                <Box 
-                                    sx={{ 
+                                <Box
+                                    sx={{
                                         textAlign: 'center',
                                         p: 3,
                                         borderRadius: 2,
-                                        bgcolor: theme.palette.background.default,
+                                        bgcolor: theme.palette.background.paper,
                                         boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
                                         height: '100%',
                                         transition: 'transform 0.3s ease',
@@ -254,14 +242,18 @@ const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
                                         }
                                     }}
                                 >
-                                    <Typography variant="h5" component="h3" gutterBottom color="primary.main" fontWeight={600}>
-                                        {value}
+                                    <Typography
+                                        variant="h5"
+                                        component="h3"
+                                        gutterBottom
+                                        color="primary.main"
+                                        fontWeight={600}
+                                    >
+                                        {value.title}
                                     </Typography>
                                     <Divider sx={{ my: 2, width: '30%', mx: 'auto' }} />
                                     <Typography>
-                                        {index === 0 && "We constantly innovate our platform to provide cutting-edge learning tools."}
-                                        {index === 1 && "We ensure our educational resources are accessible to learners of all backgrounds."}
-                                        {index === 2 && "We maintain the highest standards of quality in all our educational content."}
+                                        {value.description}
                                     </Typography>
                                 </Box>
                             </Grid>
@@ -271,8 +263,8 @@ const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
             </Paper>
 
             {/* Footer */}
-            <Box component="footer" sx={{ 
-                py: 3, 
+            <Box component="footer" sx={{
+                py: 3,
                 textAlign: 'center',
                 backgroundColor: theme.palette.background.default,
                 mt: 'auto'
@@ -282,7 +274,7 @@ const AboutUs = ({ avatar ,themeMode,toggleTheme}) => {
                         &copy; 2025 Education Inc. All rights reserved.
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Contact us: support@education.com
+                        {t.contactEmail || "Contact us: support@education.com"}
                     </Typography>
                 </Container>
             </Box>
